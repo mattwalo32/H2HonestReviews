@@ -1,6 +1,7 @@
 import './App.css';
 import React, {useState, useEffect} from "react";
 import Axios from 'axios';
+import DetailsPage from './pages/DetailsPage/DetailsPage';
 
 function App() {
   const [movieName, setMovieName] = useState('');
@@ -43,41 +44,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1> CRUD APPLICATIONS</h1>
-
-      <div className="form">
-        <label> Movie Name:</label>
-        <input type="text" name="movieName" onChange={(e) => {
-          setMovieName(e.target.value)
-        } }/>
-        <label> Review:</label>
-        <input type="text" name="Review" onChange={(e) => {
-          setReview(e.target.value)
-        }}/>
-        
-        <button onClick={submitReview}> Submit</button>
-
-        {movieReviewList.map((val) => {
-          return (
-            <div className = "card">
-              <h1> MovieName: {val.movieName} </h1>
-              <p>Movie Review: {val.movieReview}</p>
-              <button onClick={() => { deleteReview(val.movieName) }}> Delete</button>
-              <input type="text" id="updateInput" onChange={(e) => {
-                setNewReview(e.target.value)
-              } }/>
-              <button onClick={() => {
-                updateReview(val.movieName)
-              }}> Update</button>
-              </div>
-          );
-          
-          ;
-        })}
-        
-
-      </div>
-      
+      <DetailsPage />
     </div>
   );
 }
