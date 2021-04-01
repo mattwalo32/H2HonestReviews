@@ -4,7 +4,18 @@ import { Rating } from '@material-ui/lab'
 const MOCK_WATER_DATA = {
     name: "Kirkland",
     imageURL: "https://media.istockphoto.com/photos/water-bottle-on-white-background-picture-id1126933760?k=6&m=1126933760&s=612x612&w=0&h=_ekI__thTuuhyQ5avoB81g7qnBm6Un5pq7AMVBPRruk=",
-    averageRating: 3.0,
+    averageRating: "3",
+    reviews: [
+        {
+            name: "Matthew W",
+            rating: "4",
+            tast: "2",
+            price: "4",
+            mouthFeel: "0",
+            portability: "5",
+            packagingQuality: "2",
+        }
+    ]
 }
 
 const DetailsPage = () => {
@@ -17,10 +28,9 @@ const DetailsPage = () => {
         }
 
         getWaterData();
-    })
+    }, [setWaterData])
 
     const renderRatingStatistic = (name, value) => {
-        console.log(value)
         return (
             <div>
                 <h3>{name}</h3>
@@ -34,17 +44,24 @@ const DetailsPage = () => {
         )
     }
 
-
     const renderReviews = () => {
+       if (waterData?.reviews == null) 
+            return null;
+
         return (
-            <div>
-            { renderRatingStatistic("Rating", waterData?.averageRating) }
-            { renderRatingStatistic("Taste", waterData?.averageRating) }
-            { renderRatingStatistic("Price", waterData?.averageRating) }
-            { renderRatingStatistic("Mouth Feel", waterData?.averageRating) }
-            { renderRatingStatistic("Portability", waterData?.averageRating) }
-            { renderRatingStatistic("Packaging Quality", waterData?.averageRating) }
-            </div>
+            waterData.reviews.map((review) => {
+                return (
+                    <div>
+                        <h2>{review.name}</h2>
+                        { renderRatingStatistic("Rating", review.rating) }
+                        { renderRatingStatistic("Taste", review.taste) }
+                        { renderRatingStatistic("Price", review.price) }
+                        { renderRatingStatistic("Mouth Feel", review.mouthFeel) }
+                        { renderRatingStatistic("Portability", review.portability) }
+                        { renderRatingStatistic("Packaging Quality", review.packagingQuality) }
+                    </div>
+                )
+            })
         )
     }
 
