@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Layout, Menu} from "antd";
+import { Layout, Image} from "antd";
+import logo from "./logo.png"
 
 
 const { Content } = Layout;
@@ -9,7 +10,10 @@ function Home(props) {
 
   return (
     <div>
-      This is the home page
+      <Image
+      width={700}
+      src = {logo}
+    />
     </div>
   );
 }
