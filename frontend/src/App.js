@@ -1,52 +1,45 @@
 import './App.css';
 import React, {useState, useEffect} from "react";
-import Axios from 'axios';
-import DetailsPage from './pages/DetailsPage/DetailsPage';
+import { Route, BrowserRouter as Router } from "react-router-dom";
+import Home from "./Home";
+import Navigation from "./Navigation";
+import WaterGallery from "./WaterGallery";
+import Profile from "./Profile";
 
 function App() {
-  const [movieName, setMovieName] = useState('');
-  const [Review, setReview] = useState('');
-  const [movieReviewList, setMovieReviewList] = useState([]);
-  const [newReview, setNewReview] = useState("");
-
-  useEffect(() => {
-    Axios.get('http://localhost:3002/api/get').then((response) => {
-      setMovieReviewList(response.data)
-    })
-  },[])
-
-  const submitReview = () => { 
-    Axios.post('http://localhost:3002/api/insert', {
-      movieName: movieName,
-      movieReview: Review
-    });
-    
-    setMovieReviewList([
-      ...movieReviewList,
-      {
-        movieName: movieName,
-        movieReview: Review
-      },
-    ]);
-  };
-
-  const deleteReview = (movieName) => {
-    Axios.delete(`http://localhost:3002/api/delete/${movieName}`);
-  };
-
-  const updateReview = (movieName) => {
-    Axios.put(`http://localhost:3002/api/update`, {
-      movieName: movieName,
-      movieReview: newReview
-    });
-    setNewReview("")
-  };
-
-  return (
-    <div className="App">
-      <DetailsPage />
-    </div>
+    return (
+    <Router>
+      <Route
+        path="/"
+        exact
+        component={() => (
+          <Navigation content={<Home />} page="home" needsAuth={false} />
+        )}
+      />
+      <Route
+        path="/gallery"
+        component={() => (
+          <Navigation
+            content={<WaterGallery />}
+            page="gallery"
+            needsAuth={false}
+          />
+        )}
+      />
+      <Route
+        path="/profile"
+        component={() => (
+          <Navigation
+            content={<Profile />}
+            page="profile"
+            needsAuth={false}
+          />
+        )}
+      />
+    </Router>
   );
+  
+  
 }
 
 export default App;
