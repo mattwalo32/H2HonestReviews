@@ -10,6 +10,15 @@ const MOCK_WATER_DATA = {
     name: "Kirkland",
     imageURL: "https://media.istockphoto.com/photos/water-bottle-on-white-background-picture-id1126933760?k=6&m=1126933760&s=612x612&w=0&h=_ekI__thTuuhyQ5avoB81g7qnBm6Un5pq7AMVBPRruk=",
     averageRating: "3",
+    distributors: [
+        {name: "Costco", city: "Gurnee"},
+        {name: "Target", city: "Champaign"},
+    ],
+    manufacturer: {
+        name: "Kirkland",
+        country: "United States",
+        yearFounded: "1983",
+    },
     reviews: [
         {
             name: "John Doe",
@@ -43,6 +52,23 @@ const DetailsPage = () => {
 
         getWaterData();
     }, [setWaterData])
+
+    const WaterInfo = () => {
+        return (
+            <div>
+                <h2>Water Info</h2>
+                <h3>Manufacturer</h3>
+                <p>Name: {waterData?.manufacturer?.name}</p>
+                <p>Country: {waterData?.manufacturer?.country}</p>
+                <p>Year Founded: {waterData?.manufacturer?.yearFounded}</p>
+
+                <h3>Distributors</h3>
+                {waterData?.distributors && waterData?.distributors.map((d) => {
+                    return <p>{d.name} ({d.city})</p>
+                })}
+            </div>
+        );
+    }
 
     const renderRatingStatistic = (name, i, value, isDisabled = true, onChange =()=>{}) => {
         return (
@@ -125,6 +151,8 @@ const DetailsPage = () => {
         <div className="page-container">
             <h1>{waterData?.name}</h1>
             <img className="image" src={waterData?.imageURL} />
+
+            <WaterInfo />
 
             <div className="reviews-container">
                 <h2>Average Rating</h2>
