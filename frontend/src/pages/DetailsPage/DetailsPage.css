@@ -1,0 +1,20 @@
+.review-container {
+    width: 700px;
+    align-self: center;
+    margin-bottom: 80px;
+}
+
+.reviews-container {
+    align-self: center;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.image {
+    height: 500px;
+    width: 400px;
+    align-self: center;
+}
