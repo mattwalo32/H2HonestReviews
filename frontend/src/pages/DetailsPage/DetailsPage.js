@@ -43,15 +43,24 @@ const MOCK_WATER_DATA = {
 
 const DetailsPage = () => {
     const [waterData, setWaterData] = useState(null)
+    const [liked, setLiked] = useState(false);
 
     useEffect(() => {
         const getWaterData = async () => {
             // TODO: Replace with actual API call
             setWaterData(MOCK_WATER_DATA)
+
+            // TODO: Get if the user likes this water from backend
+            setLiked(false);
         }
 
         getWaterData();
     }, [setWaterData])
+
+    const onLike = () => {
+        setLiked(!liked);
+        // TODO: Post like status to API
+    }
 
     const WaterInfo = () => {
         return (
@@ -151,7 +160,7 @@ const DetailsPage = () => {
         <div className="page-container">
             <h1>{waterData?.name}</h1>
             <img className="image" src={waterData?.imageURL} />
-
+            <Button className="like-button" variant="contained" color={liked ? "primary" : "secondary" } onClick={onLike}>{liked ? "Unlike" : "like"}</Button> 
             <WaterInfo />
 
             <div className="reviews-container">
