@@ -4,7 +4,13 @@
     margin-bottom: 80px;
 }
 
+.icon {
+    width: 45px;
+    height: 80px;
+}
+
 .reviews-container {
+    height: 175px;
     align-self: center;
 }
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './DetailsPage.css'
 //import { Rating } from '@material-ui/lab'
+import emptyImage from '../../assets/empty-bottle.png'
+import fullImage from '../../assets/full-bottle.png'
 import Rating from 'react-rating'
 import { Button, Grid, GridList, GridListTile } from '@material-ui/core'
 
@@ -46,20 +48,15 @@ const DetailsPage = () => {
         return (
             <GridListTile key={`${name}-${i}`} cols={1}>
                 <h3>{name}</h3>
-                {isDisabled ? 
-                    <Rating
-                        initialRating={value}
-                        fractions={2}
-                        readonly
-                    />
-                : 
-                    <Rating
-                        value={value}
-                        fractions={2}
-                        onChange={(newVal) => onChange(name, newVal)}
-                        quiet
-                    />
-                }
+                <Rating
+                    emptySymbol={<img className="icon" src={emptyImage}/>}
+                    fullSymbol={<img className="icon" src={fullImage}/>}
+                    value={value}
+                    initialRating={value}
+                    fractions={2}
+                    readonly={isDisabled}
+                    onChange={(newVal) => onChange(name, newVal)}
+                />
             </GridListTile>
         )
     }
@@ -75,7 +72,7 @@ const DetailsPage = () => {
                         <h2>{review.name}</h2>
 
                         <GridList 
-                            cellHeight={100}
+                            cellHeight={175}
                             cols={3}>
                             { renderRatingStatistic("Rating", index, review.rating) }
                             { renderRatingStatistic("Taste", index, review.taste) }
@@ -109,7 +106,7 @@ const DetailsPage = () => {
                 <h1>Leave a Review!</h1>
 
                 <GridList 
-                    cellHeight={100}
+                    cellHeight={175}
                     cols={3}>
                     { renderRatingStatistic("Overall Rating", 0, userReview?.rating, false, onChange) }
                     { renderRatingStatistic("Taste", 0, userReview?.taste, false, onChange) }
@@ -132,6 +129,8 @@ const DetailsPage = () => {
             <div className="reviews-container">
                 <h2>Average Rating</h2>
                 <Rating
+                    emptySymbol={<img className="icon" src={emptyImage}/>}
+                    fullSymbol={<img className="icon" src={fullImage}/>}
                     initialRating={waterData?.averageRating}
                     readonly
                 />
