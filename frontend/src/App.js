@@ -5,41 +5,49 @@ import Home from "./Home";
 import Navigation from "./Navigation";
 import WaterGallery from "./WaterGallery";
 import Profile from "./Profile";
+import LoginPage from "./pages/LoginPage/LoginPage"
 
 function App() {
-    return (
-    <Router>
-      <Route
-        path="/"
-        exact
-        component={() => (
-          <Navigation content={<Home />} page="home" needsAuth={false} />
-        )}
-      />
-      <Route
-        path="/gallery"
-        component={() => (
-          <Navigation
-            content={<WaterGallery />}
-            page="gallery"
-            needsAuth={false}
-          />
-        )}
-      />
-      <Route
-        path="/profile"
-        component={() => (
-          <Navigation
-            content={<Profile />}
-            page="profile"
-            needsAuth={false}
-          />
-        )}
-      />
-    </Router>
-  );
-  
-  
+    const [isUserAuthenticated, setUserAuthenticated] = useState(false);
+
+    function renderApp() {
+      if (!isUserAuthenticated)
+        return <LoginPage onAuthChange={setUserAuthenticated} />
+
+      return (
+      <Router>
+        <Route
+          path="/"
+          exact
+          component={() => (
+            <Navigation content={<Home />} page="home" needsAuth={false} />
+          )}
+        />
+        <Route
+          path="/gallery"
+          component={() => (
+            <Navigation
+              content={<WaterGallery />}
+              page="gallery"
+              needsAuth={false}
+            />
+          )}
+        />
+        <Route
+          path="/profile"
+          component={() => (
+            <Navigation
+              content={<Profile />}
+              page="profile"
+              needsAuth={false}
+            />
+          )}
+        />
+      </Router>
+      );
+    }
+
+    return renderApp();
 }
 
 export default App;
