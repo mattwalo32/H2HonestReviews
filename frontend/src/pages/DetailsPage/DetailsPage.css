@@ -1,0 +1,31 @@
+.review-container {
+    width: 700px;
+    align-self: center;
+    margin-bottom: 80px;
+}
+
+.icon {
+    width: 45px;
+    height: 80px;
+}
+
+.reviews-container {
+    height: 175px;
+    align-self: center;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.image {
+    height: 500px;
+    width: 400px;
+    align-self: center;
+}
+
+.like-button {
+    width: 100px;
+    align-self: center;
+}

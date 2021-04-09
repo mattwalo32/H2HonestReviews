@@ -1,7 +1,6 @@
 import './App.css';
 import React, {useState, useEffect} from "react";
 import { Route, BrowserRouter as Router } from "react-router-dom";
-
 import Home from "./Home";
 import Navigation from "./Navigation";
 import WaterGallery from "./WaterGallery";
