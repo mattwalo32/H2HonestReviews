@@ -1,3 +1,4 @@
+
 """ Specifies routing for the application"""
 from flask import render_template, request, jsonify
 from app import app
@@ -7,8 +8,8 @@ from app import database as db_helper
 def delete(water_id):
     """ recieved post requests for entry delete """
     try:
-        db_helper.remove_task_by_id(water_id)
-        result = {'success': True, 'response': 'Removed task'}
+        db_helper.remove_water_by_id(water_id)
+        result = {'success': True, 'response': 'Removed water'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
@@ -31,6 +32,7 @@ def update(water_id):
 
 @app.route("/create", methods=['POST'])
 def create():
+    data = request.get_json()
     try:
         if "name" in data and 'manufacturer_id' in data:
             db_helper.insert_new_water(data['manufacturer_id'], data["name"])
