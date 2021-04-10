@@ -27,6 +27,11 @@ def init_connection_engine():
         for var in env_variables:
             os.environ[var] = env_variables[var]
 
+    print(os.environ.get('MYSQL_USER'), 
+            os.environ.get('MYSQL_PASSWORD'),
+             os.environ.get('MYSQL_DB'),
+             os.environ.get('MYSQL_HOST'),)
+
     pool = sqlalchemy.create_engine(
         sqlalchemy.engine.url.URL(
             drivername="mysql+pymysql",

@@ -3,51 +3,48 @@ from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
 
-@app.route("/delete/<int:task_id>", methods=['POST'])
-def delete(task_id):
+@app.route("/delete/<int:water_id>", methods=['POST'])
+def delete(water_id):
     """ recieved post requests for entry delete """
-
     try:
-        db_helper.remove_task_by_id(task_id)
+        db_helper.remove_task_by_id(water_id)
         result = {'success': True, 'response': 'Removed task'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
-
     return jsonify(result)
 
 
-@app.route("/edit/<int:task_id>", methods=['POST'])
-def update(task_id):
+@app.route("/edit/<int:water_id>", methods=['POST'])
+def update(water_id):
     """ recieved post requests for entry updates """
-
     data = request.get_json()
-
     try:
-        if "status" in data:
-            db_helper.update_status_entry(task_id, data["status"])
+        if "name" in data:
+            db_helper.update_status_entry(water_id, data["name"])
             result = {'success': True, 'response': 'Status Updated'}
-        elif "description" in data:
-            db_helper.update_task_entry(task_id, data["description"])
-            result = {'success': True, 'response': 'Task Updated'}
         else:
             result = {'success': True, 'response': 'Nothing Updated'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
-
     return jsonify(result)
 
 
 @app.route("/create", methods=['POST'])
 def create():
-    """ recieves post requests to add new task """
-    data = request.get_json()
-    db_helper.insert_new_task(data['description'])
-    result = {'success': True, 'response': 'Done'}
+    try:
+        if "name" in data and 'manufacturer_id' in data:
+            db_helper.insert_new_water(data['manufacturer_id'], data["name"])
+            result = {'success': True, 'response': 'Inserted'}
+        else:
+            result = {'success': True, 'response': 'Missing fields'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+
     return jsonify(result)
 
 
 @app.route("/")
 def homepage():
     """ returns rendered homepage """
-    items = db_helper.fetch_todo()
+    items = db_helper.fetch_waters()
     return render_template("index.html", items=items)

@@ -1,86 +1,84 @@
 """Defines all the functions related to the database"""
 from app import db
 
-def fetch_todo() -> dict:
-    """Reads all tasks listed in the todo table
-
-    Returns:
-        A list of dictionaries
-    """
-
+def fetch_waters() -> dict:
     conn = db.connect()
-    query_results = conn.execute("Select * from tasks;").fetchall()
+    query_results = conn.execute("Select * from Water;").fetchall()
     conn.close()
-    todo_list = []
+    water_list = []
     for result in query_results:
         item = {
-            "id": result[0],
-            "task": result[1],
-            "status": result[2]
+            "manufacturer_id": result[0],
+            "water_id": result[1],
+            "name": result[2]
         }
-        todo_list.append(item)
+        water_list.append(item)
+    print(water_list[0])
+    return water_list
 
-    return todo_list
-
-
-def update_task_entry(task_id: int, text: str) -> None:
-    """Updates task description based on given `task_id`
-
-    Args:
-        task_id (int): Targeted task_id
-        text (str): Updated description
-
-    Returns:
-        None
-    """
-
+def search_waters(water_name: str):
     conn = db.connect()
-    query = 'Update tasks set task = "{}" where id = {};'.format(text, task_id)
+    query = "SELECT * FROM Water W WHERE W.name = {} ORDER ASC;".format(water_name)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    water_list = []
+    for result in query_results:
+        item = {
+            "manufacturer_id": result[0],
+            "water_id": result[1],
+            "name": result[2]
+        }
+        water_list.append(item)
+    return water_list
+
+def update_water_entry(water_id: int, name: str) -> None:
+    conn = db.connect()
+    query = 'Update Water set name = "{}" where id = {};'.format(name, water_id)
     conn.execute(query)
     conn.close()
 
 
-def update_status_entry(task_id: int, text: str) -> None:
-    """Updates task status based on given `task_id`
-
-    Args:
-        task_id (int): Targeted task_id
-        text (str): Updated status
-
-    Returns:
-        None
+def insert_new_water(manufacturer_id: int, name: str) ->  int:
+    """
+    Insert new water into water table. water_id is auto-generated
     """
 
     conn = db.connect()
-    query = 'Update tasks set status = "{}" where id = {};'.format(text, task_id)
-    conn.execute(query)
-    conn.close()
-
-
-def insert_new_task(text: str) ->  int:
-    """Insert new task to todo table.
-
-    Args:
-        text (str): Task description
-
-    Returns: The task ID for the inserted entry
-    """
-
-    conn = db.connect()
-    query = 'Insert Into tasks (task, status) VALUES ("{}", "{}");'.format(
-        text, "Todo")
+    query = 'Insert Into Water(water_id, manufacturer_id, name) VALUES ("{}", "{}");'.format(
+        "NULL", manufacturer_id, name)
     conn.execute(query)
     query_results = conn.execute("Select LAST_INSERT_ID();")
     query_results = [x for x in query_results]
-    task_id = query_results[0][0]
+    water_id = query_results[0][0]
     conn.close()
+    return water_id
 
-    return task_id
 
-
-def remove_task_by_id(task_id: int) -> None:
-    """ remove entries based on task ID """
+def remove_water_by_id(water_id: int) -> None:
+    """ remove entries based on water ID """
     conn = db.connect()
-    query = 'Delete From tasks where id={};'.format(task_id)
+    query = 'Delete From Water where water_id={};'.format(water_id)
     conn.execute(query)
     conn.close()
+
+def get_reviews_for_a_water(water_id: int) -> dict:
+    conn = db.connect()
+    query = 'SELECT * FROM Reviews R WHERE R.water_id = {}'.format(water_id)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    review_list = []
+    for result in query_results:
+        item = {
+            "review_id" : result[0],
+            "rating": result[1] ,   
+            "water_id": result[2],
+            "taste": result[3],
+            "price": result[4],
+            "mouth_feel": result[5],
+            "portability": result[6],
+            "packaging_quality": result[7],
+            "user_id": result[8]
+        }
+        review_list.append(item)
+
+    return review_list
