@@ -83,3 +83,9 @@ def get_reviews_for_a_water(water_id: int) -> dict:
 
     return review_list
 
+def create_review(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id):
+    conn = db.connect()
+    query = 'Insert Into Reviews(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id) VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(
+        rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id)
+    conn.execute(query)
+    conn.close()

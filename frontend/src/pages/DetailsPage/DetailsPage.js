@@ -133,11 +133,18 @@ const DetailsPage = () => {
     }
 
     const LeaveReview = () => {
-        const [userReview, setUserReview] = useState(null)
+        const [userReview, setUserReview] = useState({
+            "Overall Rating": 0,
+            "Taste": 0,
+            "Price": 0,
+            "Mouth Feel": 0,
+            "Portability": 0,
+            "Packaging Quality": 0,
+            "UserID" : Math.floor(Math.random() * 999)
+        })
 
         const submitReview = () => {
-            // TODO: Post to backend
-            console.log(userReview)
+            axios.post(`${BASE_URL}/reviews/${waterId}`, userReview)
         }
 
         const onChange = (property, value) => {
