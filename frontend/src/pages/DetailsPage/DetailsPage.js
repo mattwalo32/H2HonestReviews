@@ -112,10 +112,11 @@ const DetailsPage = () => {
             "Overall Rating": review.rating,
             "Taste": review.taste,
             "Price": review.price,
-            "Mouth Feel": review.mouthFeel,
+            "Mouth Feel": review.mouth_feel,
             "Portability": review.portability,
-            "Packaging Quality": review.packagingQuality,
-            "UserID" : review.user_id
+            "Packaging Quality": review.packaging_quality,
+            "UserID" : review.user_id,
+            "water_id": waterId
         })
 
         const onChange = (property, value) => {
@@ -126,14 +127,14 @@ const DetailsPage = () => {
 
         const editSaveReview = () => {
             if (!isDisabled){
-                // TODO: Post
+                axios.put(`${BASE_URL}/reviews/${review.review_id}`, userReview)
             }
 
             setIsDisabled(!isDisabled);
         }
 
         const deleteReview = () => {
-            // TODO: Dlete
+            axios.delete(`${BASE_URL}/reviews/${review.review_id}`)
         }
 
         return (

@@ -34,12 +34,29 @@ def create_review(water_id):
 @app.route("/reviews/<string:review_id>", methods=['PUT'])
 def update_review(review_id):
     """Updates a review"""
-    # TODO
+    try:
+        r = request.json
+        db.update_review(r["Overall Rating"], r["water_id"], r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["UserID"], review_id)
+        result = {'success': True }
+    except Exception as e:
+        print(e)
+        result = {'success': False}
+    return jsonify(result)
 
-@app.route("/reviews/:review_id", methods=['DELETE'])
+
+
+@app.route("/reviews/<string:review_id>", methods=['DELETE'])
 def delete_review(review_id):
     """Deletes a new review"""
-    # TODO
+    try:
+        r = request.json
+        db.delete_review(review_id)
+        result = {'success': True }
+    except Exception as e:
+        print(e)
+        result = {'success': False}
+    return jsonify(result)
+
 
 @app.route("/water/byminrating/:rating", methods=['GET'])
 def get_waters_by_min_rating(rating):
