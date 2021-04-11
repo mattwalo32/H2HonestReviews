@@ -60,7 +60,7 @@ const DetailsPage = () => {
             // TODO: Get if the user likes this water from backend
             setLiked(false);
 
-            const res = await axios.get(`${BASE_URL}/${waterId}/reviews`)
+            let res = await axios.get(`${BASE_URL}/water/${waterId}/reviews`)
             setReviews(res.data.response);
         }
 

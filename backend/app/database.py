@@ -83,10 +83,3 @@ def get_reviews_for_a_water(water_id: int) -> dict:
 
     return review_list
 
-
-def execute_query(query) ->  int:
-    conn.execute(query)
-    query_results = conn.execute("Select LAST_INSERT_ID();")
-    query_results = [x for x in query_results]
-    conn.close()
-    return query_results
