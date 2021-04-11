@@ -102,3 +102,17 @@ def delete_review(review_id):
     query = 'DELETE FROM Reviews WHERE review_id={}'.format(review_id)
     conn.execute(query)
     conn.close()
+
+def get_users_like(username):
+    conn = db.connect()
+    query = 'SELECT * FROM User WHERE username LIKE \'{}%%\''.format(username)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    review_list = []
+    for result in query_results:
+        item = {
+            "username" : result[1],
+        }
+        review_list.append(item)
+
+    return review_list

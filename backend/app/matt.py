@@ -16,8 +16,15 @@ def get_water_reviews(water_id):
 
 @app.route("/users/<string:username>", methods=['GET'])
 def get_user(username):
+    print("TEST")
     """Get users where username LIKE username"""
-    # TODO
+    try:
+        res = db.get_users_like(username)
+        result = {'success': True, 'response': res }
+    except Exception as e:
+        print(e)
+        result = {'success': False}
+    return jsonify(result)
 
 @app.route("/reviews/<int:water_id>", methods=['POST'])
 def create_review(water_id):
