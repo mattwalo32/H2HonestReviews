@@ -61,8 +61,7 @@ const DetailsPage = () => {
             setLiked(false);
 
             const res = await axios.get(`${BASE_URL}/${waterId}/reviews`)
-            console.log(res)
-            setReviews(res.data);
+            setReviews(res.data.response);
         }
 
         getWaterData();
@@ -115,7 +114,7 @@ const DetailsPage = () => {
             reviews.map((review, index) => {
                 return (
                     <div className="review-container">
-                        <h2>{review.name}</h2>
+                        <h2>User #{review.user_id}</h2>
 
                         <GridList 
                             cellHeight={175}
