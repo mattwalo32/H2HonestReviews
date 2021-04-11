@@ -46,6 +46,7 @@ function App() {
           )}
         />
         <Route
+<<<<<<< HEAD
           path="/addstuff"
           component={() => (
             <Navigation
@@ -57,6 +58,9 @@ function App() {
         />
         <Route
           path="/waters/:waterid"
+=======
+          path="/waters/:waterId"
+>>>>>>> 9d108ce00d8f21ae2633dbecc740202ce74d9476
           component={() => (
             <DetailsPage />
           )}
