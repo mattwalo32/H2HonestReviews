@@ -24,17 +24,17 @@ def create_review():
     """Creates a new review"""
     # TODO
 
-@app.route("/reviews", methods=['PUT'])
-def create_review():
-    """Creates a new review"""
+@app.route("/reviews/<string:review_id>", methods=['PUT'])
+def update_review(review_id):
+    """Updates a review"""
     # TODO
 
-@app.route("/reviews", methods=['DELETE'])
-def delete_review():
+@app.route("/reviews/:review_id", methods=['DELETE'])
+def delete_review(review_id):
     """Deletes a new review"""
     # TODO
 
-@app.route("/users/<string:username>", methods=['GET'])
-def get_user(username):
-    """Get users where username LIKE username"""
+@app.route("/water/byminrating/:rating", methods=['GET'])
+def get_waters_by_min_rating(rating):
+    """Gets all waters with a min rating"""
     # TODO
