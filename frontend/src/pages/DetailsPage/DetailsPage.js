@@ -106,28 +106,63 @@ const DetailsPage = () => {
         )
     }
 
+    const Review = ({review, index}) => {
+        const [isDisabled, setIsDisabled] = useState(true);
+        const [userReview, setUserReview] = useState({
+            "Overall Rating": review.rating,
+            "Taste": review.taste,
+            "Price": review.price,
+            "Mouth Feel": review.mouthFeel,
+            "Portability": review.portability,
+            "Packaging Quality": review.packagingQuality,
+            "UserID" : review.user_id
+        })
+
+        const onChange = (property, value) => {
+            const updatedReview = userReview || {};
+            updatedReview[property] = value;
+            setUserReview(updatedReview)
+        }
+
+        const editSaveReview = () => {
+            if (!isDisabled){
+                // TODO: Post
+            }
+
+            setIsDisabled(!isDisabled);
+        }
+
+        const deleteReview = () => {
+            // TODO: Dlete
+        }
+
+        return (
+            <div className="review-container">
+                <h2>User #{review.user_id}</h2>
+
+                <GridList 
+                    cellHeight={175}
+                    cols={3}>
+                    { renderRatingStatistic("Rating", index, userReview["Rating"], isDisabled, onChange) }
+                    { renderRatingStatistic("Taste", index, userReview["Taste"], isDisabled, onChange) }
+                    { renderRatingStatistic("Price", index, userReview["Price"], isDisabled, onChange) }
+                    { renderRatingStatistic("Mouth Feel", index, userReview["Mouth Feel"], isDisabled, onChange) }
+                    { renderRatingStatistic("Portability", index, userReview["Portability"], isDisabled, onChange) }
+                    { renderRatingStatistic("Packaging Quality", index, userReview["Packaging Quality"], isDisabled, onChange) }
+                </GridList>
+                <Button variant="contained" color="primary" onClick={editSaveReview}>{isDisabled ? "Edit" : "Save"}</Button>
+                <Button variant="contained" color="primary" onClick={deleteReview}>Delete</Button>
+            </div>
+        )
+    }
+
     const renderReviews = () => {
        if (reviews == null) 
             return null;
 
         return (
             reviews.map((review, index) => {
-                return (
-                    <div className="review-container">
-                        <h2>User #{review.user_id}</h2>
-
-                        <GridList 
-                            cellHeight={175}
-                            cols={3}>
-                            { renderRatingStatistic("Rating", index, review.rating) }
-                            { renderRatingStatistic("Taste", index, review.taste) }
-                            { renderRatingStatistic("Price", index, review.price) }
-                            { renderRatingStatistic("Mouth Feel", index, review.mouthFeel) }
-                            { renderRatingStatistic("Portability", index, review.portability) }
-                            { renderRatingStatistic("Packaging Quality", index, review.packagingQuality) }
-                        </GridList>
-                    </div>
-                )
+                return <Review review={review} index={index} />
             })
         )
     }
