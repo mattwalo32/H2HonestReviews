@@ -116,3 +116,27 @@ def get_users_like(username):
         review_list.append(item)
 
     return review_list
+
+def get_waters_by_min_rating(min_rating):
+    conn = db.connect()
+    query = """SELECT Water.water_id, manufacturer_id, Water.name AS water_name, Manufacturer.name AS manufacturer_name, rating.avg_rating
+FROM Water JOIN Manufacturer USING(manufacturer_id),
+    (
+        SELECT water_id, AVG(rating) AS avg_rating
+        FROM Reviews JOIN Water USING(water_id)
+        GROUP BY water_id
+    ) AS rating
+WHERE rating.avg_rating > {} AND Water.water_id = rating.water_id""".format(min_rating)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    water_list = []
+    for result in query_results:
+        item = {
+            "manufacturer_id": result[1],
+            "water_id": result[0],
+            "name": result[2],
+            "manufacturer": result[3],
+            "avg_rating": str(result[4]),
+        }
+        water_list.append(item)
+    return water_list

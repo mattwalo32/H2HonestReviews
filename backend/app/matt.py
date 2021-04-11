@@ -16,7 +16,6 @@ def get_water_reviews(water_id):
 
 @app.route("/users/<string:username>", methods=['GET'])
 def get_user(username):
-    print("TEST")
     """Get users where username LIKE username"""
     try:
         res = db.get_users_like(username)
@@ -65,7 +64,13 @@ def delete_review(review_id):
     return jsonify(result)
 
 
-@app.route("/water/byminrating/:rating", methods=['GET'])
+@app.route("/water/byminrating/<string:rating>", methods=['GET'])
 def get_waters_by_min_rating(rating):
     """Gets all waters with a min rating"""
-    # TODO
+    try:
+        data = db.get_waters_by_min_rating(rating)
+        result = {'success': True,  'response': data}
+    except Exception as e:
+        print(e)
+        result = {'success': False}
+    return jsonify(result)
