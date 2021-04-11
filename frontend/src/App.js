@@ -7,6 +7,7 @@ import WaterGallery from "./WaterGallery";
 import Profile from "./Profile";
 import LoginPage from "./pages/LoginPage/LoginPage"
 import DetailsPage from './pages/DetailsPage/DetailsPage';
+import AddStuff from './AddStuff';
 
 function App() {
     const [isUserAuthenticated, setUserAuthenticated] = useState(false);
@@ -40,6 +41,16 @@ function App() {
             <Navigation
               content={<Profile />}
               page="profile"
+              needsAuth={false}
+            />
+          )}
+        />
+        <Route
+          path="/addstuff"
+          component={() => (
+            <Navigation
+              content={<AddStuff />}
+              page="addstuff"
               needsAuth={false}
             />
           )}
