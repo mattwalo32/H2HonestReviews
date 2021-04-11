@@ -83,6 +83,7 @@ def get_reviews_for_a_water(water_id: int) -> dict:
 
     return review_list
 
+<<<<<<< HEAD
 def fetch_manufacturers() -> dict:
     conn = db.connect()
     query_results = conn.execute("Select * from Manufacturer;").fetchall()
@@ -137,3 +138,12 @@ def water_ratings_by_city() -> dict:
         }
         ratings_list.append(item)
     return ratings_list
+=======
+
+def execute_query(query) ->  int:
+    conn.execute(query)
+    query_results = conn.execute("Select LAST_INSERT_ID();")
+    query_results = [x for x in query_results]
+    conn.close()
+    return query_results
+>>>>>>> edc51002913969e69db74b2c3e631f7d897f7d19

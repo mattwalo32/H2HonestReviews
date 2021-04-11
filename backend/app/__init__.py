@@ -3,8 +3,7 @@ import os
 import sqlalchemy
 from flask import Flask
 from yaml import load, Loader
-
-
+from flask_cors import CORS
 
 def init_connection_engine():
     """ initialize database setup
@@ -46,6 +45,7 @@ def init_connection_engine():
 
 
 app = Flask(__name__)
+CORS(app)
 db = init_connection_engine()
 
 # To prevent from using a blueprint, we use a cyclic import
