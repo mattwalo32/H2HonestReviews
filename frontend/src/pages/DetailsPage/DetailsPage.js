@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import './DetailsPage.css'
 //import { Rating } from '@material-ui/lab'
 import emptyImage from '../../assets/empty-bottle.png'
 import fullImage from '../../assets/full-bottle.png'
 import Rating from 'react-rating'
 import { Button, Grid, GridList, GridListTile } from '@material-ui/core'
+import axios from 'axios';
+
+const BASE_URL = "http://localhost:5000"
 
 const MOCK_WATER_DATA = {
     name: "Kirkland",
@@ -41,9 +45,12 @@ const MOCK_WATER_DATA = {
     ]
 }
 
-const DetailsPage = ({waterId}) => {
+const DetailsPage = () => {
     const [waterData, setWaterData] = useState(null)
+    const [reviews, setReviews] = useState([])
     const [liked, setLiked] = useState(false);
+    let { waterId } = useParams();
+
 
     useEffect(() => {
         const getWaterData = async () => {
@@ -52,6 +59,10 @@ const DetailsPage = ({waterId}) => {
 
             // TODO: Get if the user likes this water from backend
             setLiked(false);
+
+            const res = await axios.get(`${BASE_URL}/${waterId}/reviews`)
+            console.log(res)
+            setReviews(res.data);
         }
 
         getWaterData();
@@ -97,11 +108,11 @@ const DetailsPage = ({waterId}) => {
     }
 
     const renderReviews = () => {
-       if (waterData?.reviews == null) 
+       if (reviews == null) 
             return null;
 
         return (
-            waterData.reviews.map((review, index) => {
+            reviews.map((review, index) => {
                 return (
                     <div className="review-container">
                         <h2>{review.name}</h2>
