@@ -41,7 +41,7 @@ const MOCK_WATER_DATA = {
     ]
 }
 
-const DetailsPage = () => {
+const DetailsPage = ({waterId}) => {
     const [waterData, setWaterData] = useState(null)
     const [liked, setLiked] = useState(false);
 
