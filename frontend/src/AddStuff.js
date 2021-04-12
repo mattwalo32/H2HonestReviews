@@ -19,6 +19,15 @@ function AddStuff(props) {
       function submitDistributor(values) {
         Axios.post(`http://localhost:5000/distributor/create`, values).then((response) => {
             console.log(response.data);
+            searchDistributor();
+          })
+        
+      }
+      function updateDistributor(values) {
+          console.log(values)
+        Axios.put('http://localhost:5000/distributor/' + values["distributor_id"], values).then((response) => {
+            console.log(response.data);
+            searchDistributor();
           })
         
       }
@@ -119,7 +128,7 @@ function AddStuff(props) {
                 <Card  style={{ width: 300 }}>
                 <p>{val["distributor_name"]}</p>
                 <p>{val["distributor_city"]}</p>
-                <p>Card content</p>
+                <p>{val["distributor_id"]}</p>
                 <Button
                 onClick = {() => (deleteDistributor(val["distributor_id"]))}
                 >
@@ -129,6 +138,42 @@ function AddStuff(props) {
               );
             })}
     </div>
+
+    <h1>Update a distributor</h1>
+      <Form
+      {...layout}
+      name="basic"
+      onFinish={updateDistributor}
+    >
+        <Form.Item
+        label="ID"
+        name="distributor_id"
+        rules={[{ required: true, message: 'Please input the ID of the distributor!' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="City"
+        name="distributor_city"
+        rules={[{ required: true, message: 'Please input the city of the distributor!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="Name"
+        name="distributor_name"
+        rules={[{ required: true, message: 'Please input the name of the distributor!' }]}
+      >
+        <Input/>
+      </Form.Item>
+
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
 
   </div>
   );
