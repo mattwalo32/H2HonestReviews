@@ -228,26 +228,20 @@ WHERE rating.avg_rating > {} AND Water.water_id = rating.water_id""".format(min_
         water_list.append(item)
     return water_list
 
-def insert_distributor(city: str, name: str) ->  int:
+def insert_distributor(distributor_city, distributor_name):
     """
     Insert new distributor into distributor table. distributor_id is auto-generated
     """
-
     conn = db.connect()
-    query = 'Insert Into Distributor(distributor_id, distributor_name, distributor_city) VALUES ("{}", "{}");'.format(
-        "NULL", name, city)
+    query = 'Insert Into Distributor(distributor_name, distributor_city) VALUES ("{}", "{}");'.format(
+        distributor_name, distributor_city)
     conn.execute(query)
-    query_results = conn.execute("Select LAST_INSERT_ID();")
-    query_results = [x for x in query_results]
-    distributor_id = query_results[0][0]
     conn.close()
-    return distributor_id
 
 def get_distributor_city(city: str):
     conn = db.connect()
     query = 'SELECT * FROM Distributor WHERE distributor_city="{}"'.format(city)
     query_results = conn.execute(query).fetchall()
-    print(query_results)
     conn.close()
     distributor_list = []
     for result in query_results:
@@ -261,8 +255,12 @@ def get_distributor_city(city: str):
 
 def update_distributor(distributor_id, distributor_city, distributor_name):
     conn = db.connect()
+    query = 'SET FOREIGN_KEY_CHECKS=0;'
+    conn.execute(query)
     query = 'UPDATE Distributor SET distributor_id={}, distributor_city="{}", distributor_name="{}"'.format(
         distributor_id, distributor_city, distributor_name)
+    conn.execute(query)
+    query = 'SET FOREIGN_KEY_CHECKS=1;'
     conn.execute(query)
     conn.close() 
 
