@@ -15,12 +15,8 @@ function AddStuff(props) {
       };
 
       function submitDistributor(values) {
-        Axios.post('http://127.0.0.1:5000/distributor/', {
-            distributor_city: values['city'],
-            distributor_name: values['name']
-        }).then((response) => {
-            if (response.data['success'] == true)
-                console.log('Success:', values);
+        Axios.post(`http://localhost:5000/distributor/create`, values).then((response) => {
+            console.log(response.data);
           })
         
       }
@@ -42,7 +38,7 @@ function AddStuff(props) {
     >
       <Form.Item
         label="City"
-        name="city"
+        name="distributor_city"
         rules={[{ required: true, message: 'Please input the city of the distributor!' }]}
       >
         <Input />
@@ -50,7 +46,7 @@ function AddStuff(props) {
 
       <Form.Item
         label="Name"
-        name="name"
+        name="distributor_name"
         rules={[{ required: true, message: 'Please input the name of the distributor!' }]}
       >
         <Input/>

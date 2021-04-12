@@ -3,7 +3,7 @@ from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
 
-@app.route("/distributor", methods=['POST'])
+@app.route("/distributor/create", methods=['POST'])
 def create_distributor():
     """Creates a new distributor"""
     data = request.get_json()
