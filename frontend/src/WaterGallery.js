@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
+import Axios from 'axios';
 
 const useStylesGrid = makeStyles((theme) => ({
   root: {
@@ -33,26 +34,41 @@ function WaterGallery() {
   const [waterList, setWaterList] = useState([]);
   const [waterListUpdated, setWaterListUpdated] = useState(false);
 
+  const [showFolloweeFavs, setShowFolloweeFavs] = useState(false);
   const [sliderValue, setSliderValue] = React.useState(30);
-  
-  const dummyData = [{waterName: "Water", waterManufacturer: "Manufacturer", waterAvgRating: 5}]
-  /*                    
-  useEffect(() => {
-    Axios.get('http://localhost:3002/api/get_waters').then((response) => {
-      setWaterList(response.data)
-    })
-  },[])*/
 
   const updateWaterList = () => {
-    console.log(waterListUpdated)
     if (!waterListUpdated) {
+      if (showFolloweeFavs) {
+        Axios.get('http://localhost:5000/following/favorites/7').then((response) => {
+          if (response.data['success'] == true)
+            console.log(response.data.response)
+            if (response.data.response == null) {
+              setWaterList([])
+            } else {
+              setWaterList(response.data.response)
+            }
+        })
+        setShowFolloweeFavs(false)
+      } else {
+        // TODO: replace with filter by min rating call
+        // min rating is sliderValue
+        Axios.get('http://localhost:5000/waters').then((response) => {
+          if (response.data['success'] == true)
+            setWaterList(response.data.response)
+        })
+      }
       setWaterListUpdated(true);
-      setWaterList(waterList.concat(dummyData));
     }
   }
 
   const setWaterListNeedsUpdate = () => {
     setWaterListUpdated(false);
+  }
+
+  const setFilterForFolloweeFavs = () => {
+    setShowFolloweeFavs(true);
+    setWaterListUpdated();
   }
 
   const handleSliderChange = (event, newValue) => {
@@ -66,7 +82,7 @@ function WaterGallery() {
       <div className="form">
         <Button variant="contained" onClick={setWaterListNeedsUpdate}> Update</Button>
         <br></br>
-        <Button variant="contained" onClick={setWaterListNeedsUpdate}> Show Favorite Waters of Users You Follow</Button>
+        <Button variant="contained" onClick={setFilterForFolloweeFavs}> Show Favorite Waters of Users You Follow</Button>
         <br></br>
         <div className={sliderClasses.root}>
           <Typography id="continuous-slider" gutterBottom>
@@ -84,9 +100,7 @@ function WaterGallery() {
               return (
                 <Grid key={index} item>
                   <Paper className={gridClasses.paper}>
-                    <h1>Water Name: {val.waterName} </h1>
-                    <p>Manufacturer: {val.waterManufacturer}</p>
-                    <p>Average Rating: {val.waterAvgRating}/5</p>
+                    <h1>Water Name: {val.water_name} </h1>
                   </Paper>
                 </Grid>
               );
