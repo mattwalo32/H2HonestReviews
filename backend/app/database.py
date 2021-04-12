@@ -255,8 +255,8 @@ def get_distributor_city(city: str):
 
 def update_distributor(distributor_id, distributor_city, distributor_name):
     conn = db.connect()
-    query = 'UPDATE Distributor SET distributor_id={}, distributor_city="{}", distributor_name="{}"'.format(
-        distributor_id, distributor_city, distributor_name)
+    query = 'UPDATE Distributor SET distributor_city="{}", distributor_name="{}" WHERE distributor_id={}'.format(
+        distributor_city, distributor_name, distributor_id)
     conn.execute(query)
     conn.close() 
 
