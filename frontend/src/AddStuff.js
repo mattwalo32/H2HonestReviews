@@ -15,7 +15,14 @@ function AddStuff(props) {
       };
 
       function submitDistributor(values) {
-        console.log('Success:', values);
+        Axios.post('http://127.0.0.1:5000/distributor/', {
+            distributor_city: values['city'],
+            distributor_name: values['name']
+        }).then((response) => {
+            if (response.data['success'] == true)
+                console.log('Success:', values);
+          })
+        
       }
 
       function submitWater(values) {
