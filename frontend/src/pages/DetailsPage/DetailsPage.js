@@ -60,9 +60,8 @@ const DetailsPage = () => {
             // TODO: Get if the user likes this water from backend
             setLiked(false);
 
-            const res = await axios.get(`${BASE_URL}/${waterId}/reviews`)
-            console.log(res)
-            setReviews(res.data);
+            let res = await axios.get(`${BASE_URL}/water/${waterId}/reviews`)
+            setReviews(res.data.response);
         }
 
         getWaterData();
@@ -107,38 +106,81 @@ const DetailsPage = () => {
         )
     }
 
+    const Review = ({review, index}) => {
+        const [isDisabled, setIsDisabled] = useState(true);
+        const [userReview, setUserReview] = useState({
+            "Overall Rating": review.rating,
+            "Taste": review.taste,
+            "Price": review.price,
+            "Mouth Feel": review.mouth_feel,
+            "Portability": review.portability,
+            "Packaging Quality": review.packaging_quality,
+            "UserID" : review.user_id,
+            "water_id": waterId
+        })
+
+        const onChange = (property, value) => {
+            const updatedReview = userReview || {};
+            updatedReview[property] = value;
+            setUserReview(updatedReview)
+        }
+
+        const editSaveReview = () => {
+            if (!isDisabled){
+                axios.put(`${BASE_URL}/reviews/${review.review_id}`, userReview)
+            }
+
+            setIsDisabled(!isDisabled);
+        }
+
+        const deleteReview = () => {
+            axios.delete(`${BASE_URL}/reviews/${review.review_id}`)
+        }
+
+        return (
+            <div className="review-container">
+                <h2>User #{review.user_id}</h2>
+
+                <GridList 
+                    cellHeight={175}
+                    cols={3}>
+                    { renderRatingStatistic("Rating", index, userReview["Rating"], isDisabled, onChange) }
+                    { renderRatingStatistic("Taste", index, userReview["Taste"], isDisabled, onChange) }
+                    { renderRatingStatistic("Price", index, userReview["Price"], isDisabled, onChange) }
+                    { renderRatingStatistic("Mouth Feel", index, userReview["Mouth Feel"], isDisabled, onChange) }
+                    { renderRatingStatistic("Portability", index, userReview["Portability"], isDisabled, onChange) }
+                    { renderRatingStatistic("Packaging Quality", index, userReview["Packaging Quality"], isDisabled, onChange) }
+                </GridList>
+                <Button variant="contained" color="primary" onClick={editSaveReview}>{isDisabled ? "Edit" : "Save"}</Button>
+                <Button variant="contained" color="primary" onClick={deleteReview}>Delete</Button>
+            </div>
+        )
+    }
+
     const renderReviews = () => {
        if (reviews == null) 
             return null;
 
         return (
             reviews.map((review, index) => {
-                return (
-                    <div className="review-container">
-                        <h2>{review.name}</h2>
-
-                        <GridList 
-                            cellHeight={175}
-                            cols={3}>
-                            { renderRatingStatistic("Rating", index, review.rating) }
-                            { renderRatingStatistic("Taste", index, review.taste) }
-                            { renderRatingStatistic("Price", index, review.price) }
-                            { renderRatingStatistic("Mouth Feel", index, review.mouthFeel) }
-                            { renderRatingStatistic("Portability", index, review.portability) }
-                            { renderRatingStatistic("Packaging Quality", index, review.packagingQuality) }
-                        </GridList>
-                    </div>
-                )
+                return <Review review={review} index={index} />
             })
         )
     }
 
     const LeaveReview = () => {
-        const [userReview, setUserReview] = useState(null)
+        const [userReview, setUserReview] = useState({
+            "Overall Rating": 0,
+            "Taste": 0,
+            "Price": 0,
+            "Mouth Feel": 0,
+            "Portability": 0,
+            "Packaging Quality": 0,
+            "UserID" : Math.floor(Math.random() * 999)
+        })
 
         const submitReview = () => {
-            // TODO: Post to backend
-            console.log(userReview)
+            axios.post(`${BASE_URL}/reviews/${waterId}`, userReview)
         }
 
         const onChange = (property, value) => {

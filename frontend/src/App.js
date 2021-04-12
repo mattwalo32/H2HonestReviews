@@ -56,7 +56,7 @@ function App() {
           )}
         />
         <Route
-          path="/waters/:waterid"
+          path="/waters/:waterId"
           component={() => (
             <DetailsPage />
           )}

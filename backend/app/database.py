@@ -170,9 +170,60 @@ def get_favorite_waters_of_following(user_id: int) -> dict:
     
     return following_favs_list
 
-def execute_query(query) ->  int:
+def create_review(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id):
+    conn = db.connect()
+    query = 'Insert Into Reviews(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id) VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(
+        rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id)
     conn.execute(query)
-    query_results = conn.execute("Select LAST_INSERT_ID();")
-    query_results = [x for x in query_results]
     conn.close()
-    return query_results
+
+def update_review(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id, review_id):
+    conn = db.connect()
+    query = 'UPDATE Reviews SET rating={}, water_id={}, taste={}, price={}, mouth_feel={}, portability={}, packaging_quality={}, user_id={} WHERE review_id={};'.format(
+        rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id, review_id)
+    conn.execute(query)
+    conn.close()
+
+def delete_review(review_id):
+    conn = db.connect()
+    query = 'DELETE FROM Reviews WHERE review_id={}'.format(review_id)
+    conn.execute(query)
+    conn.close()
+
+def get_users_like(username):
+    conn = db.connect()
+    query = 'SELECT * FROM User WHERE username LIKE \'{}%%\''.format(username)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    review_list = []
+    for result in query_results:
+        item = {
+            "username" : result[1],
+        }
+        review_list.append(item)
+
+    return review_list
+
+def get_waters_by_min_rating(min_rating):
+    conn = db.connect()
+    query = """SELECT Water.water_id, manufacturer_id, Water.name AS water_name, Manufacturer.name AS manufacturer_name, rating.avg_rating
+FROM Water JOIN Manufacturer USING(manufacturer_id),
+    (
+        SELECT water_id, AVG(rating) AS avg_rating
+        FROM Reviews JOIN Water USING(water_id)
+        GROUP BY water_id
+    ) AS rating
+WHERE rating.avg_rating > {} AND Water.water_id = rating.water_id""".format(min_rating)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    water_list = []
+    for result in query_results:
+        item = {
+            "manufacturer_id": result[1],
+            "water_id": result[0],
+            "water_name": result[2],
+            "manufacturer": result[3],
+            "avg_rating": str(result[4]),
+        }
+        water_list.append(item)
+    return water_list
