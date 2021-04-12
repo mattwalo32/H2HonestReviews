@@ -227,3 +227,68 @@ WHERE rating.avg_rating > {} AND Water.water_id = rating.water_id""".format(min_
         }
         water_list.append(item)
     return water_list
+
+def insert_distributor(city: str, name: str) ->  int:
+    """
+    Insert new distributor into distributor table. distributor_id is auto-generated
+    """
+
+    conn = db.connect()
+    query = 'Insert Into Distributor(distributor_id, distributor_name, distributor_city) VALUES ("{}", "{}");'.format(
+        "NULL", name, city)
+    conn.execute(query)
+    query_results = conn.execute("Select LAST_INSERT_ID();")
+    query_results = [x for x in query_results]
+    distributor_id = query_results[0][0]
+    conn.close()
+    return distributor_id
+
+def get_distributor_city(city: str):
+    conn = db.connect()
+    query = 'SELECT * FROM Distributor WHERE distributor_city="{}"'.format(city)
+    query_results = conn.execute(query).fetchall()
+    print(query_results)
+    conn.close()
+    distributor_list = []
+    for result in query_results:
+        item = {
+            "distributor_id": result[0],
+            "distributor_city": result[1],
+            "distributor_name": result[2]
+        }
+        distributor_list.append(item)
+    return distributor_list     
+
+def update_distributor(distributor_id, distributor_city, distributor_name):
+    conn = db.connect()
+    query = 'UPDATE Distributor SET distributor_id={}, distributor_city="{}", distributor_name="{}"'.format(
+        distributor_id, distributor_city, distributor_name)
+    conn.execute(query)
+    conn.close() 
+
+def delete_distributor(distributor_id):
+    conn = db.connect()
+    query = 'DELETE FROM Distributor WHERE distributor_id={}'.format(distributor_id)
+    conn.execute(query)
+    conn.close()
+
+def get_countries_average_rating():
+    conn = db.connect()
+    query = """SELECT m.country, AVG(temp.avg_rating) as country_average_rating
+FROM MASS.Manufacturer m JOIN MASS.Water w USING (manufacturer_id),(
+        SELECT water_id, AVG(rating) AS avg_rating
+        FROM MASS.Reviews
+        GROUP BY water_id
+    ) AS temp
+WHERE w.water_id = temp.water_id
+GROUP BY m.country;"""
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    rating_list = []
+    for result in query_results:
+        item = {
+            "country": result[0],
+            "avg_rating": float(result[1]),
+        }
+        rating_list.append(item)
+    return rating_list
