@@ -10,10 +10,9 @@ def fetch_waters() -> dict:
         item = {
             "manufacturer_id": result[0],
             "water_id": result[1],
-            "name": result[2]
+            "water_name": result[2]
         }
         water_list.append(item)
-    print(water_list[0])
     return water_list
 
 def search_waters(water_name: str):
@@ -83,7 +82,6 @@ def get_reviews_for_a_water(water_id: int) -> dict:
 
     return review_list
 
-<<<<<<< HEAD
 def fetch_manufacturers() -> dict:
     conn = db.connect()
     query_results = conn.execute("Select * from Manufacturer;").fetchall()
@@ -138,7 +136,39 @@ def water_ratings_by_city() -> dict:
         }
         ratings_list.append(item)
     return ratings_list
-=======
+
+def get_favorite_waters_of_following(user_id: int) -> dict:
+    conn = db.connect()
+    query = """SELECT f.follower_id AS user_id, a.user_id AS friend_id, a.water_id AS fav_water_id, u1.name as user_name, u2.name as friend_name, w.name as name
+                FROM Water w, User u1, User u2, Follows f JOIN
+                    (
+                    SELECT r1.user_id AS user_id, r1.water_id AS water_id
+                    FROM Reviews r1
+                    WHERE r1.rating = 
+                        (
+                        SELECT MAX(r2.rating)
+                        FROM Reviews r2
+                        WHERE r2.user_id = r1.user_id
+                        GROUP BY r2.user_id
+                        )
+                    ) a ON f.followee_id = a.user_id
+                WHERE w.water_id = a.water_id AND u1.user_id = f.follower_id AND u2.user_id = f.followee_id AND f.follower_id = {};
+            """.format(user_id)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    following_favs_list = []
+    for result in query_results:
+        item = {
+            "user_id" : result[0],
+            "friend_id": result[1] ,   
+            "fav_water_id": result[2],
+            "user_name": result[3],
+            "friend_name": result[4],
+            "water_name": result[5]
+        }
+        following_favs_list.append(item)
+    
+    return following_favs_list
 
 def execute_query(query) ->  int:
     conn.execute(query)
@@ -146,4 +176,3 @@ def execute_query(query) ->  int:
     query_results = [x for x in query_results]
     conn.close()
     return query_results
->>>>>>> edc51002913969e69db74b2c3e631f7d897f7d19
