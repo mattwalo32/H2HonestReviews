@@ -5,9 +5,19 @@ from app import database as db_helper
 
 @app.route("/waters", methods=['GET'])
 def get_waters():
-    """ get all waters with manufacturer info from table """
+    """ get all waters from table """
     try:
         waters = db_helper.fetch_waters()
+        result = {'success': True, 'response': waters}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
+
+@app.route("/waters/name/<string:name>", methods=['GET'])
+def get_waters_by_name(name):
+    """ get all waters from table with name like name """
+    try:
+        waters = db_helper.search_waters(name)
         result = {'success': True, 'response': waters}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
@@ -38,9 +48,10 @@ def delete_water(water_id):
 def update_water(water_id):
     """ recieved post requests for entry updates """
     data = request.get_json()
+    print(data)
     try:
         if "name" in data:
-            db_helper.update_status_entry(water_id, data["name"])
+            db_helper.update_water_entry(water_id, data["name"])
             result = {'success': True, 'response': 'Status Updated'}
         else:
             result = {'success': True, 'response': 'Nothing Updated'}

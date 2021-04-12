@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Form, Input, Button, Checkbox} from "antd";
+import Axios from 'axios';
 
 
 
@@ -15,6 +16,13 @@ function AddStuff(props) {
 
       function submitDistributor(values) {
         console.log('Success:', values);
+      }
+
+      function submitWater(values) {
+        console.log(values)
+        Axios.post('http://localhost:5000/waters/create', values).then((response) => {
+          console.log(response.data)
+        })
       }
 
   return (
@@ -37,6 +45,35 @@ function AddStuff(props) {
         label="Name"
         name="name"
         rules={[{ required: true, message: 'Please input the name of the distributor!' }]}
+      >
+        <Input/>
+      </Form.Item>
+
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+
+    <h1>Add a Water</h1>
+      <Form
+      {...layout}
+      name="basic"
+      onFinish={submitWater}
+    >
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: 'Please input the name of the water!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="Manufacturer Id"
+        name="manufacturer_id"
+        rules={[{ required: true, message: 'Please input the id of the manufacturer!' }]}
       >
         <Input/>
       </Form.Item>

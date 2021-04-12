@@ -16,23 +16,26 @@ def fetch_waters() -> dict:
     return water_list
 
 def search_waters(water_name: str):
+    print('here')
     conn = db.connect()
-    query = "SELECT * FROM Water W WHERE W.name = {} ORDER ASC;".format(water_name)
+    query = 'SELECT * FROM Water W WHERE W.name LIKE "%%{}%%" ORDER BY W.name;'.format(water_name)
+    print(query)
     query_results = conn.execute(query).fetchall()
+    print(query_results)
     conn.close()
     water_list = []
     for result in query_results:
         item = {
             "manufacturer_id": result[0],
             "water_id": result[1],
-            "name": result[2]
+            "water_name": result[2]
         }
         water_list.append(item)
     return water_list
 
 def update_water_entry(water_id: int, name: str) -> None:
     conn = db.connect()
-    query = 'Update Water set name = "{}" where id = {};'.format(name, water_id)
+    query = 'Update Water set name = "{}" where water_id = {};'.format(name, water_id)
     conn.execute(query)
     conn.close()
 
@@ -41,10 +44,9 @@ def insert_new_water(manufacturer_id: int, name: str) ->  int:
     """
     Insert new water into water table. water_id is auto-generated
     """
-
     conn = db.connect()
-    query = 'Insert Into Water(water_id, manufacturer_id, name) VALUES ("{}", "{}");'.format(
-        "NULL", manufacturer_id, name)
+    query = 'Insert Into Water(manufacturer_id, name) VALUES ({}, "{}");'.format(
+        manufacturer_id, name)
     conn.execute(query)
     query_results = conn.execute("Select LAST_INSERT_ID();")
     query_results = [x for x in query_results]
