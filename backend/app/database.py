@@ -255,12 +255,8 @@ def get_distributor_city(city: str):
 
 def update_distributor(distributor_id, distributor_city, distributor_name):
     conn = db.connect()
-    query = 'SET FOREIGN_KEY_CHECKS=0;'
-    conn.execute(query)
     query = 'UPDATE Distributor SET distributor_id={}, distributor_city="{}", distributor_name="{}"'.format(
         distributor_id, distributor_city, distributor_name)
-    conn.execute(query)
-    query = 'SET FOREIGN_KEY_CHECKS=1;'
     conn.execute(query)
     conn.close() 
 

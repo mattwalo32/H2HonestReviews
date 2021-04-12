@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Form, Input, Button, Checkbox} from "antd";
+import Axios from 'axios';
 
 
 
@@ -14,7 +15,14 @@ function AddStuff(props) {
       };
 
       function submitDistributor(values) {
-        console.log('Success:', values);
+        Axios.post('http://127.0.0.1:5000/distributor/', {
+            distributor_city: values['city'],
+            distributor_name: values['name']
+        }).then((response) => {
+            if (response.data['success'] == true)
+                console.log('Success:', values);
+          })
+        
       }
 
   return (
