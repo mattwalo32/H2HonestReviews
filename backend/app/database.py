@@ -41,10 +41,9 @@ def insert_new_water(manufacturer_id: int, name: str) ->  int:
     """
     Insert new water into water table. water_id is auto-generated
     """
-
     conn = db.connect()
-    query = 'Insert Into Water(water_id, manufacturer_id, name) VALUES ("{}", "{}");'.format(
-        "NULL", manufacturer_id, name)
+    query = 'Insert Into Water(manufacturer_id, name) VALUES ({}, "{}");'.format(
+        manufacturer_id, name)
     conn.execute(query)
     query_results = conn.execute("Select LAST_INSERT_ID();")
     query_results = [x for x in query_results]
