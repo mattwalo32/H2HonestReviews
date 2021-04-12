@@ -18,20 +18,6 @@ def create_distributor():
 
     return jsonify(result)
 
-@app.route("/distributor", methods=['OPTIONS'])
-def create_distributor_options():
-    """Creates a new distributor"""
-    data = request.get_json()
-    try:
-        if "distributor_name" in data and 'distributor_city' in data:
-            db_helper.insert_distributor(data['distributor_city'], data['distributor_name'])
-            result = {'success': True, 'response': 'Inserted'}
-        else:
-            result = {'success': True, 'response': 'Missing fields'}
-    except:
-        result = {'success': False, 'response': 'Something went wrong'}
-
-    return jsonify(result)
 
 @app.route("/distributor/<string:city>", methods=['GET'])
 def get_city_distributor(city):
