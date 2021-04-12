@@ -177,6 +177,13 @@ def create_review(rating, water_id, taste, price, mouth_feel, portability, packa
     conn.execute(query)
     conn.close()
 
+def update_review(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id, review_id):
+    conn = db.connect()
+    query = 'UPDATE Reviews SET rating={}, water_id={}, taste={}, price={}, mouth_feel={}, portability={}, packaging_quality={}, user_id={} WHERE review_id={};'.format(
+        rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id, review_id)
+    conn.execute(query)
+    conn.close()
+
 def delete_review(review_id):
     conn = db.connect()
     query = 'DELETE FROM Reviews WHERE review_id={}'.format(review_id)
@@ -214,7 +221,7 @@ WHERE rating.avg_rating > {} AND Water.water_id = rating.water_id""".format(min_
         item = {
             "manufacturer_id": result[1],
             "water_id": result[0],
-            "name": result[2],
+            "water_name": result[2],
             "manufacturer": result[3],
             "avg_rating": str(result[4]),
         }

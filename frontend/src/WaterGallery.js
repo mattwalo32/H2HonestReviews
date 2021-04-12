@@ -36,6 +36,7 @@ function WaterGallery() {
 
   const [showFolloweeFavs, setShowFolloweeFavs] = useState(false);
   const [sliderValue, setSliderValue] = React.useState(30);
+  const history = useHistory();
 
   const updateWaterList = () => {
     if (!waterListUpdated) {
@@ -51,9 +52,7 @@ function WaterGallery() {
         })
         setShowFolloweeFavs(false)
       } else {
-        // TODO: replace with filter by min rating call
-        // min rating is sliderValue
-        Axios.get('http://localhost:5000/waters').then((response) => {
+        Axios.get(`http://localhost:5000/water/byminrating/${sliderValue}`).then((response) => {
           if (response.data['success'] == true)
             setWaterList(response.data.response)
         })
@@ -98,7 +97,7 @@ function WaterGallery() {
           <Grid container spacing={3}>
             {waterList.map((val, index) => {
               return (
-                <Grid key={index} item>
+                <Grid key={index} item onClick={() => { history.push(`/waters/${val.water_id}`)}}>
                   <Paper className={gridClasses.paper}>
                     <h1>Water Name: {val.water_name} </h1>
                   </Paper>
