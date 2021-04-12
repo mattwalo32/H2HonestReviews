@@ -8,6 +8,7 @@ import Axios from 'axios';
 function AddStuff(props) {
     const [searchCity, setSearchCity] = useState("");
     const [distributors, setDistributors] = useState([]);
+    const [countryRatings, setCountryRatings] = useState([]);
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
@@ -42,6 +43,12 @@ function AddStuff(props) {
         Axios.get('http://localhost:5000/distributor/' + searchCity).then((response) => {
           console.log(response.data.response)
           setDistributors(response.data.response)
+        })
+    }
+    function searchCountry() {
+        Axios.get('http://localhost:5000/countryrating').then((response) => {
+          console.log(response.data.response)
+          setCountryRatings(response.data.response)
         })
     }
     function deleteDistributor(id) {
@@ -174,6 +181,25 @@ function AddStuff(props) {
         </Button>
       </Form.Item>
     </Form>
+
+    <h1>See All countries and average rating!</h1>
+
+    <Button type="primary" 
+    onClick = {searchCountry}
+    >
+          Click here to see!
+    </Button>
+    <div>
+
+            {countryRatings.map((val, index) => {
+              return (
+                <Card  style={{ width: 300 }}>
+                <p>{val["country"]}</p>
+                <p>{val["avg_rating"]}</p>
+                </Card>
+              );
+            })}
+    </div>
 
   </div>
   );
