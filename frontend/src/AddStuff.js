@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Form, Input, Button, Checkbox} from "antd";
+import { Form, Input, Button, Checkbox, Card} from "antd";
 import Axios from 'axios';
 
 
 
 function AddStuff(props) {
+    const [searchCity, setSearchCity] = useState("");
+    const [distributors, setDistributors] = useState([]);
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
@@ -27,6 +29,19 @@ function AddStuff(props) {
           console.log(response.data)
         })
       }
+    function searchDistributor() {
+        Axios.get('http://localhost:5000/distributor/' + searchCity).then((response) => {
+          console.log(response.data.response)
+          setDistributors(response.data.response)
+        })
+    }
+    function deleteDistributor(id) {
+        console.log(id)
+        Axios.delete('http://localhost:5000/distributor/' + id).then((response) => {
+            console.log(response.data);
+            searchDistributor();
+          })
+    }
 
   return (
     <div>
@@ -87,6 +102,34 @@ function AddStuff(props) {
         </Button>
       </Form.Item>
     </Form>
+    <h1>Search for a Distributor!</h1>
+    <input placeholder="Enter City" 
+    value = {searchCity}
+    onChange = {e => setSearchCity(e.target.value)}
+    />
+    <Button type="primary" 
+    onClick = {searchDistributor}
+    >
+          Submit
+    </Button>
+    <div>
+
+            {distributors.map((val, index) => {
+              return (
+                <Card  style={{ width: 300 }}>
+                <p>{val["distributor_name"]}</p>
+                <p>{val["distributor_city"]}</p>
+                <p>Card content</p>
+                <Button
+                onClick = {() => (deleteDistributor(val["distributor_id"]))}
+                >
+                    DELETE
+                </Button>
+                </Card>
+              );
+            })}
+    </div>
+
   </div>
   );
 }
