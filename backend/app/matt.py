@@ -55,7 +55,6 @@ def update_review(review_id):
 def delete_review(review_id):
     """Deletes a new review"""
     try:
-        r = request.json
         db.delete_review(review_id)
         result = {'success': True }
     except Exception as e:
@@ -73,4 +72,18 @@ def get_waters_by_min_rating(rating):
     except Exception as e:
         print(e)
         result = {'success': False}
+    return jsonify(result)
+
+@app.route("/users", methods=['POST'])
+def create_user():
+    """Creates a new user"""
+    try:
+        r = request.json
+        if (db.create_user(r["username"], r["password"]) == -1):
+            result = {'success': False, 'message': 'Account is taken'}
+        else:
+            result = {'success': True }
+    except Exception as e:
+        print(e)
+        result = {'success': False, 'message': str(e)}
     return jsonify(result)

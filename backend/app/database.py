@@ -288,3 +288,25 @@ GROUP BY m.country;"""
         }
         rating_list.append(item)
     return rating_list
+
+def get_user_id(username, password):
+    conn = db.connect()
+    query = 'SELECT user_id FROM User WHERE username="{}" AND password="{}"'.format(username, password)
+    query_results = conn.execute(query).fetchall()
+    for result in query_results:
+        return result[0]
+    conn.close()
+    return None
+
+def create_user(username, password):
+    conn = db.connect()
+    query = 'SELECT user_id FROM User WHERE username="{}"'.format(username)
+    query_results = conn.execute(query).fetchall()
+    if (len(query_results) != 0):
+        conn.close()
+        return -1
+
+    query = 'INSERT INTO User(username, password) VALUES ("{}", "{}")'.format(username, password)
+    conn.execute(query)
+    conn.close()
+    return 1
