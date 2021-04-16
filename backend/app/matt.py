@@ -87,3 +87,17 @@ def create_user():
         print(e)
         result = {'success': False, 'message': str(e)}
     return jsonify(result)
+
+@app.route("/users", methods=['GET'])
+def login_user():
+    """Gets a users id"""
+    try:
+        id = db.get_user_id(request.args.get("username"), request.args.get("password"))
+        if (id is None):
+            result = {'success': False, 'message': 'Incorrect username or password'}
+        else:
+            result = {'success': True, 'userId': id }
+    except Exception as e:
+        print(e)
+        result = {'success': False, 'message': str(e)}
+    return jsonify(result)

@@ -8,10 +8,12 @@ function LoginPage({onAuthChange}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const onLogIn = () => {
-        // TODO: Send the request to the backend
-        // TODO: Set true if they are authenticated, false if not
-        onAuthChange(true)
+    const onLogIn = async () => {
+        const res = await axios.get(`${BASE_URL}/users?username=${username}&password=${hash(password)}`)
+        if (!res.data.success)
+            alert("Failed to log in:" + res.data.message)
+        else
+            onAuthChange(true)
     }
 
     const onSignUp = async () => {
