@@ -30,8 +30,8 @@ def create_review(water_id):
     """Creates a new review"""
     try:
         r = request.json
-        db.create_review(r["Overall Rating"], water_id, r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["UserID"])
-        result = {'success': True, 'user': r["UserID"]}
+        res = db.create_review(r["Rating"], water_id, r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["user_id"])
+        result = {'success': True, 'user': r["user_id"], 'review_id': res}
     except Exception as e:
         print(e)
         result = {'success': False}
@@ -42,7 +42,7 @@ def update_review(review_id):
     """Updates a review"""
     try:
         r = request.json
-        db.update_review(r["Overall Rating"], r["water_id"], r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["UserID"], review_id)
+        db.update_review(r["Rating"], r["water_id"], r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["user_id"], review_id)
         result = {'success': True }
     except Exception as e:
         print(e)
@@ -96,7 +96,7 @@ def login_user():
         if (id is None):
             result = {'success': False, 'message': 'Incorrect username or password'}
         else:
-            result = {'success': True, 'userId': id }
+            result = {'success': True, 'data': id }
     except Exception as e:
         print(e)
         result = {'success': False, 'message': str(e)}

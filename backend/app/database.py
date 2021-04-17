@@ -176,7 +176,8 @@ def create_review(rating, water_id, taste, price, mouth_feel, portability, packa
     conn = db.connect()
     query = 'Insert Into Reviews(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id) VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(
         rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id)
-    conn.execute(query)
+    query_result = conn.execute(query)
+    print(query_result)
     conn.close()
 
 def update_review(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id, review_id):
@@ -291,10 +292,10 @@ GROUP BY m.country;"""
 
 def get_user_id(username, password):
     conn = db.connect()
-    query = 'SELECT user_id FROM User WHERE username="{}" AND password="{}"'.format(username, password)
+    query = 'SELECT user_id, username FROM User WHERE username="{}" AND password="{}"'.format(username, password)
     query_results = conn.execute(query).fetchall()
     for result in query_results:
-        return result[0]
+        return { "user_id": result[0], "username": result[1] }
     conn.close()
     return None
 

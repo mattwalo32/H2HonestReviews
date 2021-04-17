@@ -45,7 +45,7 @@ const MOCK_WATER_DATA = {
     ]
 }
 
-const DetailsPage = () => {
+const DetailsPage = ({userData}) => {
     const [waterData, setWaterData] = useState(null)
     const [reviews, setReviews] = useState([])
     const [liked, setLiked] = useState(false);
@@ -109,7 +109,7 @@ const DetailsPage = () => {
     const Review = ({review, index}) => {
         const [isDisabled, setIsDisabled] = useState(true);
         const [userReview, setUserReview] = useState({
-            "Overall Rating": review.rating,
+            "Rating": review.rating,
             "Taste": review.taste,
             "Price": review.price,
             "Mouth Feel": review.mouth_feel,
@@ -133,8 +133,17 @@ const DetailsPage = () => {
             setIsDisabled(!isDisabled);
         }
 
-        const deleteReview = () => {
-            axios.delete(`${BASE_URL}/reviews/${review.review_id}`)
+        const deleteReview = async () => {
+            if(!review.review_id) {
+                setReviews((reviews) => reviews.filter((r) => r.review_id != review.review_id));
+                return;
+            }
+            const res = await axios.delete(`${BASE_URL}/reviews/${review.review_id}`)
+            if (res.data.success) {
+                setReviews((reviews) => reviews.filter((r) => r.review_id != review.review_id));
+            } else {
+                alert(JSON.stringify(res))
+            }
         }
 
         return (
@@ -170,17 +179,24 @@ const DetailsPage = () => {
 
     const LeaveReview = () => {
         const [userReview, setUserReview] = useState({
-            "Overall Rating": 0,
+            "Rating": 0,
             "Taste": 0,
             "Price": 0,
             "Mouth Feel": 0,
             "Portability": 0,
             "Packaging Quality": 0,
-            "UserID" : Math.floor(Math.random() * 999)
+            "user_id" : userData.user_id,
         })
 
-        const submitReview = () => {
-            axios.post(`${BASE_URL}/reviews/${waterId}`, userReview)
+        const submitReview = async () => {
+            const res = await axios.post(`${BASE_URL}/reviews/${waterId}`, userReview)
+            if (res.data.success) {
+                console.log(userReview)
+                setReviews((reviews) => reviews.concat([userReview]));
+                alert("Review submitted")
+            } else {
+                alert(JSON.stringify(res))
+            }
         }
 
         const onChange = (property, value) => {
@@ -196,7 +212,7 @@ const DetailsPage = () => {
                 <GridList 
                     cellHeight={175}
                     cols={3}>
-                    { renderRatingStatistic("Overall Rating", 0, userReview?.rating, false, onChange) }
+                    { renderRatingStatistic("Rating", 0, userReview?.rating, false, onChange) }
                     { renderRatingStatistic("Taste", 0, userReview?.taste, false, onChange) }
                     { renderRatingStatistic("Price", 0, userReview?.price, false, onChange) }
                     { renderRatingStatistic("Mouth Feel", 0, userReview?.mouthFeel, false, onChange) }

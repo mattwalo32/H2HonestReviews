@@ -4,16 +4,19 @@ import React, {useState } from "react";
 import axios from 'axios';
 const BASE_URL = "http://localhost:5000"
 
-function LoginPage({onAuthChange}) {
+function LoginPage({onAuthChange, onUserDataChange}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const onLogIn = async () => {
         const res = await axios.get(`${BASE_URL}/users?username=${username}&password=${hash(password)}`)
-        if (!res.data.success)
+        if (!res.data.success) {
             alert("Failed to log in:" + res.data.message)
-        else
+        } else {
             onAuthChange(true)
+            console.log(res.data)
+            onUserDataChange(res.data.data)
+        }
     }
 
     const onSignUp = async () => {
