@@ -4,13 +4,14 @@ from app import app
 from app import database as db_helper
 
 
-@app.route("/", methods=['POST'])
+@app.route("/manufacturers", methods=['GET'])
 def get_all_mfg():
+    print("surya.py line 9")
     result = db_helper.fetch_manufacturers()
     return jsonify(result)
 
 
-@app.route("/<int:manufacturer_id>", methods=['DELETE'])
+@app.route("/manufacturers/delete/<int:manufacturer_id>", methods=['POST'])
 def delete(manufacturer_id):
     try:
         db_helper.remove_manufacturer_by_id(manufacturer_id)
@@ -20,7 +21,7 @@ def delete(manufacturer_id):
     return jsonify(result)
 
 
-@app.route("/<int:manufacturer_id>", methods=['PUT'])
+@app.route("/manufacturers/update/<int:manufacturer_id>", methods=['POST'])
 def update(manufacturer_id):
     data = request.get_json()
     try:
@@ -34,7 +35,7 @@ def update(manufacturer_id):
     return jsonify(result)
 
 
-@app.route("/create", methods=['POST'])
+@app.route("/manufacturers/create", methods=['POST'])
 def create():
     data = request.get_json()
     try:
@@ -47,6 +48,11 @@ def create():
         result = {'success': False, 'response': 'Something went wrong'}
 
     return jsonify(result)
+
+@app.route("/manufacturers/search/<term>", methods=['POST'])
+def search(term):
+    items = db_helper.search_manufacturer_by_name(term)
+    return jsonify(items)
 
 
 @app.route("/water_by_city", methods=['POST'])

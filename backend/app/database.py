@@ -85,6 +85,7 @@ def get_reviews_for_a_water(water_id: int) -> dict:
     return review_list
 
 def fetch_manufacturers() -> dict:
+    print("database.py line 88")
     conn = db.connect()
     query_results = conn.execute("Select * from Manufacturer;").fetchall()
     conn.close()
@@ -125,6 +126,22 @@ def insert_new_manufacturer(name: str, year_founded: int, country: str) ->  dict
     manufacturer_entry = query_results[0]
     conn.close()
     return manufacturer_entry
+
+def search_manufacturer_by_name(term: str) -> dict:
+    conn = db.connect()
+    query = 'SELECT * FROM Manufacturer WHERE name LIKE "%%{}%%";'.format(term)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    results = []
+    for result in query_results:
+        item = {
+            "name": result[0],
+            "manufacturer_id": result[1],
+            "year_founded": result[2],
+            "country": result[3]
+        }
+        results.append(item)
+    return results
 
 def water_ratings_by_city() -> dict:
     conn = db.connect()
