@@ -25,11 +25,11 @@ function Navigation(props) {
         <NavLink to="/addstuff">
             add stuff
         </NavLink>
+        </Menu.Item>
         <Menu.Item>
         <NavLink to="/manufacturers">
             manufacturers
         </NavLink>
-        </Menu.Item>
         </Menu.Item>
         <Menu.Item>
         <NavLink to="/profile">

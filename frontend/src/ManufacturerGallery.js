@@ -44,14 +44,10 @@ function ManufacturerGallery() {
   const history = useHistory();
 
   const updateMfgList = () => {
-    console.log("entered updateMfgList function")
     if (!mfgListUpdated) {
-      console.log("mfgList is not updated")
-      if (showMfgByName != null) {
-        console.log("text present in search bar")
+      if (showMfgByName != null && showMfgByName != "") {
         Axios.get('http://localhost:5000/manufacturers/search/' + showMfgByName).then((response) => {
           if (response.data['success'] === true)
-            console.log('response: ' + response.data.response)
             if (response.data.response == null) {
               setMfgList([])
             } else {
@@ -60,7 +56,6 @@ function ManufacturerGallery() {
         })
         setShowMfgByName(null);
       } else {
-        console.log("text was not present in search bar")
         Axios.get(`http://localhost:5000/manufacturers`).then((response) => {
           if (response.data['success'] === true)
             setMfgList(response.data.response)
@@ -92,7 +87,7 @@ function ManufacturerGallery() {
     }
 
     const deleteMfg = () => {
-      Axios.post('http://localhost:5000/manufacturers/delete/' + val.val.water_id).then((response) => {
+      Axios.post('http://localhost:5000/manufacturers/delete/' + val.val.manufacturer_id).then((response) => {
         console.log(response.data)
       })
     }
@@ -120,6 +115,20 @@ function ManufacturerGallery() {
             >
               <Input />
             </Form.Item>
+            <Form.Item
+              label="Year"
+              name="year"
+              rules={[{ required: true, message: 'Edit year!' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Country"
+              name="country"
+              rules={[{ required: true, message: 'Edit country!' }]}
+            >
+              <Input />
+            </Form.Item>
   
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit">
@@ -133,7 +142,9 @@ function ManufacturerGallery() {
 
     return (
       <Paper className={gridClasses.paper}>
-        <h1>Manufacturer Name: {val.val.name} </h1>
+        <h1>{val.val.name} </h1>
+        <h3>Year Founded: {val.val.year_founded} </h3>
+        <h3>Country: {val.val.country} </h3>
         <Button variant="contained" onClick={handleViewDetails}> View Details</Button>
         <Button variant="contained" onClick={setEditingMfg}> Edit</Button>
         <Button variant="contained" onClick={deleteMfg}> Delete</Button>
@@ -158,7 +169,6 @@ function ManufacturerGallery() {
             <Form.Item
               label="Name"
               name="name"
-              rules={[{ required: true, message: 'Enter Name or part of name!' }]}
             >
               <Input />
             </Form.Item>

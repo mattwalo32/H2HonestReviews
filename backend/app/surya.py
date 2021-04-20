@@ -7,7 +7,12 @@ from app import database as db_helper
 @app.route("/manufacturers", methods=['GET'])
 def get_all_mfg():
     print("surya.py line 9")
-    result = db_helper.fetch_manufacturers()
+    try:
+        mfgs = db_helper.fetch_manufacturers()
+        result = {'success': True, 'response': mfgs}
+    except Exception as E:
+        print(E)
+        result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
 
@@ -30,7 +35,8 @@ def update(manufacturer_id):
             result = {'success': True, 'response': 'Status Updated'}
         else:
             result = {'success': True, 'response': 'Nothing Updated'}
-    except:
+    except Exception as E:
+        print(E)
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
@@ -38,21 +44,27 @@ def update(manufacturer_id):
 @app.route("/manufacturers/create", methods=['POST'])
 def create():
     data = request.get_json()
+    print(data)
     try:
         if "name" in data and 'year' in data and 'country' in data:
             db_helper.insert_new_manufacturer(data['name'], data["year"], data['country'])
             result = {'success': True, 'response': 'Inserted'}
         else:
             result = {'success': True, 'response': 'Missing fields'}
-    except:
+    except Exception as E:
+        print(E)
         result = {'success': False, 'response': 'Something went wrong'}
 
     return jsonify(result)
 
-@app.route("/manufacturers/search/<term>", methods=['POST'])
+@app.route("/manufacturers/search/<term>", methods=['GET'])
 def search(term):
-    items = db_helper.search_manufacturer_by_name(term)
-    return jsonify(items)
+    try:
+        items = db_helper.search_manufacturer_by_name(term)
+        result = {'success': True, 'response': items}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
 
 
 @app.route("/water_by_city", methods=['POST'])
