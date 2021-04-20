@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router } from "react-router-dom";
 import Home from "./Home";
 import Navigation from "./Navigation";
 import WaterGallery from "./WaterGallery";
+import ManufacturerGallery from "./ManufacturerGallery";
 import Profile from "./Profile";
 import LoginPage from "./pages/LoginPage/LoginPage"
 import DetailsPage from './pages/DetailsPage/DetailsPage';
@@ -31,6 +32,16 @@ function App() {
             <Navigation
               content={<WaterGallery />}
               page="gallery"
+              needsAuth={false}
+            />
+          )}
+        />
+        <Route
+          path="/manufacturers"
+          component={() => (
+            <Navigation
+              content={<ManufacturerGallery />}
+              page="manufacturers"
               needsAuth={false}
             />
           )}

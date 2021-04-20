@@ -85,6 +85,7 @@ def get_reviews_for_a_water(water_id: int) -> dict:
     return review_list
 
 def fetch_manufacturers() -> dict:
+    print("database.py line 88")
     conn = db.connect()
     query_results = conn.execute("Select * from Manufacturer;").fetchall()
     conn.close()
@@ -108,7 +109,7 @@ def remove_manufacturer_by_id(manufacturer_id: int) -> None:
 
 def update_manufacturer_entry(manufacturer_id: int, name: str, year_founded: int, country: str) -> None:
     conn = db.connect()
-    query = 'Update Manufacturer Set name = "{}", year_founded="{}", country="{}" where id = {};'.format(name, manufacturer_id, year_founded, country)
+    query = 'Update Manufacturer Set name = "{}", year_founded="{}", country="{}" where manufacturer_id = {};'.format(name, year_founded, country, manufacturer_id)
     conn.execute(query)
     conn.close()
 
@@ -117,14 +118,30 @@ def insert_new_manufacturer(name: str, year_founded: int, country: str) ->  dict
     Insert new manufacturer into Manufacturer table. manufacturer is auto-generated
     """
     conn = db.connect()
-    query = 'Insert Into Manufacturer(name, manufacturer_id, year_founded, country) VALUES ("{}", "{}");'.format(
-        name, "NULL", year_founded, country)
+    query = 'Insert Into Manufacturer(name, manufacturer_id, year_founded, country) VALUES ("{}", NULL, "{}", "{}");'.format(
+        name, year_founded, country)
     conn.execute(query)
     query_results = conn.execute("Select LAST_INSERT_ID();")
     query_results = [x for x in query_results]
     manufacturer_entry = query_results[0]
     conn.close()
     return manufacturer_entry
+
+def search_manufacturer_by_name(term: str) -> dict:
+    conn = db.connect()
+    query = 'SELECT * FROM Manufacturer WHERE name LIKE "%%{}%%";'.format(term)
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    results = []
+    for result in query_results:
+        item = {
+            "name": result[0],
+            "manufacturer_id": result[1],
+            "year_founded": result[2],
+            "country": result[3]
+        }
+        results.append(item)
+    return results
 
 def water_ratings_by_city() -> dict:
     conn = db.connect()

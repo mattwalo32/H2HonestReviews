@@ -17,28 +17,36 @@ function AddStuff(props) {
         wrapperCol: { offset: 8, span: 16 },
       };
 
-      function submitDistributor(values) {
-        Axios.post(`http://localhost:5000/distributor/create`, values).then((response) => {
-            console.log(response.data);
-            searchDistributor();
-          })
-        
-      }
-      function updateDistributor(values) {
-          console.log(values)
-        Axios.put('http://localhost:5000/distributor/' + values["distributor_id"], values).then((response) => {
-            console.log(response.data);
-            searchDistributor();
-          })
-        
-      }
-
-      function submitWater(values) {
-        console.log(values)
-        Axios.post('http://localhost:5000/waters/create', values).then((response) => {
-          console.log(response.data)
+    function submitDistributor(values) {
+      Axios.post(`http://localhost:5000/distributor/create`, values).then((response) => {
+          console.log(response.data);
+          searchDistributor();
         })
-      }
+      
+    }
+    function updateDistributor(values) {
+        console.log(values)
+      Axios.put('http://localhost:5000/distributor/' + values["distributor_id"], values).then((response) => {
+          console.log(response.data);
+          searchDistributor();
+        })
+      
+    }
+
+    function submitWater(values) {
+      console.log(values)
+      Axios.post('http://localhost:5000/waters/create', values).then((response) => {
+        console.log(response.data)
+      })
+    }
+
+    function submitManufacturer(values) {
+      console.log(values)
+      Axios.post('http://localhost:5000/manufacturers/create', values).then((response) => {
+        console.log(response.data)
+      })
+    }
+
     function searchDistributor() {
         Axios.get('http://localhost:5000/distributor/' + searchCity).then((response) => {
           console.log(response.data.response)
@@ -118,6 +126,44 @@ function AddStuff(props) {
         </Button>
       </Form.Item>
     </Form>
+
+    <h1>Add a Manufacturer</h1>
+      <Form
+      {...layout}
+      name="basic"
+      onFinish={submitManufacturer}
+    >
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: 'Please input the name of the manufacturer!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="Year"
+        name="year"
+        rules={[{ required: true, message: 'Please input the year founded of the manufacturer!' }]}
+      >
+        <Input/>
+      </Form.Item>
+
+      <Form.Item
+        label="Country"
+        name="country"
+        rules={[{ required: true, message: 'Please input the country of the manufacturer!' }]}
+      >
+        <Input/>
+      </Form.Item>
+
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+
     <h1>Search for a Distributor!</h1>
     <input placeholder="Enter City" 
     value = {searchCity}

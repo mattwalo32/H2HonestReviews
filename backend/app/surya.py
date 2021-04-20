@@ -4,13 +4,19 @@ from app import app
 from app import database as db_helper
 
 
-@app.route("/", methods=['POST'])
+@app.route("/manufacturers", methods=['GET'])
 def get_all_mfg():
-    result = db_helper.fetch_manufacturers()
+    print("surya.py line 9")
+    try:
+        mfgs = db_helper.fetch_manufacturers()
+        result = {'success': True, 'response': mfgs}
+    except Exception as E:
+        print(E)
+        result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
 
-@app.route("/<int:manufacturer_id>", methods=['DELETE'])
+@app.route("/manufacturers/delete/<int:manufacturer_id>", methods=['POST'])
 def delete(manufacturer_id):
     try:
         db_helper.remove_manufacturer_by_id(manufacturer_id)
@@ -20,7 +26,7 @@ def delete(manufacturer_id):
     return jsonify(result)
 
 
-@app.route("/<int:manufacturer_id>", methods=['PUT'])
+@app.route("/manufacturers/update/<int:manufacturer_id>", methods=['POST'])
 def update(manufacturer_id):
     data = request.get_json()
     try:
@@ -29,23 +35,35 @@ def update(manufacturer_id):
             result = {'success': True, 'response': 'Status Updated'}
         else:
             result = {'success': True, 'response': 'Nothing Updated'}
-    except:
+    except Exception as E:
+        print(E)
         result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
 
-@app.route("/create", methods=['POST'])
+@app.route("/manufacturers/create", methods=['POST'])
 def create():
     data = request.get_json()
+    print(data)
     try:
         if "name" in data and 'year' in data and 'country' in data:
             db_helper.insert_new_manufacturer(data['name'], data["year"], data['country'])
             result = {'success': True, 'response': 'Inserted'}
         else:
             result = {'success': True, 'response': 'Missing fields'}
-    except:
+    except Exception as E:
+        print(E)
         result = {'success': False, 'response': 'Something went wrong'}
 
+    return jsonify(result)
+
+@app.route("/manufacturers/search/<term>", methods=['GET'])
+def search(term):
+    try:
+        items = db_helper.search_manufacturer_by_name(term)
+        result = {'success': True, 'response': items}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
     return jsonify(result)
 
 

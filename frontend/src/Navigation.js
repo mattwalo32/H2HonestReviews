@@ -27,6 +27,11 @@ function Navigation(props) {
         </NavLink>
         </Menu.Item>
         <Menu.Item>
+        <NavLink to="/manufacturers">
+            manufacturers
+        </NavLink>
+        </Menu.Item>
+        <Menu.Item>
         <NavLink to="/profile">
             profile
         </NavLink>
