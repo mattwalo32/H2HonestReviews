@@ -74,6 +74,17 @@ def get_waters_by_min_rating(rating):
         result = {'success': False}
     return jsonify(result)
 
+@app.route("/water/<string:waterId>", methods=['GET'])
+def get_water_details(waterId):
+    """Gets all waters with a min rating"""
+    try:
+        data = db.fetch_water_details_by_id(waterId)
+        result = {'success': True,  'response': data}
+    except Exception as e:
+        print(e)
+        result = {'success': False}
+    return jsonify(result)
+
 @app.route("/users", methods=['POST'])
 def create_user():
     """Creates a new user"""

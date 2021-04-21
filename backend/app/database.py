@@ -311,3 +311,28 @@ def create_user(username, password):
     conn.execute(query)
     conn.close()
     return 1
+
+def fetch_water_details_by_id(id):
+    conn = db.connect()
+    query = 'SELECT * FROM Water NATURAL JOIN Sells NATURAL JOIN Distributor WHERE Water.water_id = {}'.format(id)
+    query_results = conn.execute(query).fetchall()
+
+    water_list = []
+    for result in query_results:
+        item = {
+            "name": result[5],
+            "city": result[4],
+        }
+        water_list.append(item)
+
+
+    query_results = conn.execute("SELECT name FROM Water WHERE water_id={}".format(id)).fetchall()
+    name = query_results[0][0]
+
+    water_data = {
+        "distributors": water_list,
+        "name": name,
+        "imageURL": "https://media.istockphoto.com/photos/water-bottle-on-white-background-picture-id1126933760?k=6&m=1126933760&s=612x612&w=0&h=_ekI__thTuuhyQ5avoB81g7qnBm6Un5pq7AMVBPRruk=",
+    }
+    conn.close()
+    return water_data

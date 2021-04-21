@@ -14,10 +14,10 @@ const MOCK_WATER_DATA = {
     name: "Kirkland",
     imageURL: "https://media.istockphoto.com/photos/water-bottle-on-white-background-picture-id1126933760?k=6&m=1126933760&s=612x612&w=0&h=_ekI__thTuuhyQ5avoB81g7qnBm6Un5pq7AMVBPRruk=",
     averageRating: "3",
-    distributors: [
-        {name: "Costco", city: "Gurnee"},
-        {name: "Target", city: "Champaign"},
-    ],
+    // distributors: [
+    //     {name: "Costco", city: "Gurnee"},
+    //     {name: "Target", city: "Champaign"},
+    // ],
     manufacturer: {
         name: "Kirkland",
         country: "United States",
@@ -54,14 +54,19 @@ const DetailsPage = ({userData}) => {
 
     useEffect(() => {
         const getWaterData = async () => {
-            // TODO: Replace with actual API call
-            setWaterData(MOCK_WATER_DATA)
-
-            // TODO: Get if the user likes this water from backend
             setLiked(false);
 
             let res = await axios.get(`${BASE_URL}/water/${waterId}/reviews`)
-            setReviews(res.data.response);
+            if (!res?.data?.success)
+                alert("An error occurred fetching reviews")
+            else
+                setReviews(res.data.response);
+
+            res = await axios.get(`${BASE_URL}/water/${waterId}`)
+            if (!res?.data?.success)
+                alert("An error occurred fetching water")
+            else
+                setWaterData(res.data.response);
         }
 
         getWaterData();
@@ -75,11 +80,11 @@ const DetailsPage = ({userData}) => {
     const WaterInfo = () => {
         return (
             <div>
-                <h2>Water Info</h2>
+                {/* <h2>Water Info</h2>
                 <h3>Manufacturer</h3>
                 <p>Name: {waterData?.manufacturer?.name}</p>
                 <p>Country: {waterData?.manufacturer?.country}</p>
-                <p>Year Founded: {waterData?.manufacturer?.yearFounded}</p>
+                <p>Year Founded: {waterData?.manufacturer?.yearFounded}</p> */}
 
                 <h3>Distributors</h3>
                 {waterData?.distributors && waterData?.distributors.map((d) => {
