@@ -329,9 +329,13 @@ def fetch_water_details_by_id(id):
     query_results = conn.execute("SELECT name FROM Water WHERE water_id={}".format(id)).fetchall()
     name = query_results[0][0]
 
+    query_results = conn.execute("SELECT AVG(rating) AS avgRating FROM Water NATURAL JOIN Reviews WHERE water_id = {}".format(id)).fetchall()
+    avg_rating = float(query_results[0][0])
+
     water_data = {
         "distributors": water_list,
         "name": name,
+        "averageRating": avg_rating,
         "imageURL": "https://media.istockphoto.com/photos/water-bottle-on-white-background-picture-id1126933760?k=6&m=1126933760&s=612x612&w=0&h=_ekI__thTuuhyQ5avoB81g7qnBm6Un5pq7AMVBPRruk=",
     }
     conn.close()
