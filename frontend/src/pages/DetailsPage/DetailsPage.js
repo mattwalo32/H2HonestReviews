@@ -120,7 +120,7 @@ const DetailsPage = ({userData}) => {
             "Mouth Feel": review.mouth_feel,
             "Portability": review.portability,
             "Packaging Quality": review.packaging_quality,
-            "UserID" : review.user_id,
+            "user_id" : review.user_id,
             "water_id": waterId
         })
 
@@ -165,8 +165,8 @@ const DetailsPage = ({userData}) => {
                     { renderRatingStatistic("Portability", index, userReview["Portability"], isDisabled, onChange) }
                     { renderRatingStatistic("Packaging Quality", index, userReview["Packaging Quality"], isDisabled, onChange) }
                 </GridList>
-                <Button variant="contained" color="primary" onClick={editSaveReview}>{isDisabled ? "Edit" : "Save"}</Button>
-                <Button variant="contained" color="primary" onClick={deleteReview}>Delete</Button>
+                { review?.user_id == userData?.user_id && <Button variant="contained" color="primary" onClick={editSaveReview}>{isDisabled ? "Edit" : "Save"}</Button>}
+                { review?.user_id == userData?.user_id && <Button variant="contained" color="primary" onClick={deleteReview}>Delete</Button> }
             </div>
         )
     }
