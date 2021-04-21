@@ -7,7 +7,7 @@ const { Content } = Layout;
 
 const BASE_URL = "http://localhost:5000"
 
-function Profile(props) {
+function Profile({userData}) {
 
   const [usernameSearch, setUsernameSearch] = useState("");
   const [users, setUsers] = useState([]);
@@ -26,8 +26,8 @@ function Profile(props) {
   return (
     <div>
       <Descriptions title="User Info">
-    <Descriptions.Item label="Name">Angela Luo</Descriptions.Item>
-    <Descriptions.Item label="Userid">1810000000</Descriptions.Item>
+    <Descriptions.Item label="Name">{userData.username}</Descriptions.Item>
+    <Descriptions.Item label="Userid">{userData.user_id}</Descriptions.Item>
   </Descriptions>
   <Descriptions title="Follows">
   </Descriptions>

@@ -30,8 +30,8 @@ def create_review(water_id):
     """Creates a new review"""
     try:
         r = request.json
-        db.create_review(r["Overall Rating"], water_id, r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["UserID"])
-        result = {'success': True, 'user': r["UserID"]}
+        res = db.create_review(r["Rating"], water_id, r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["user_id"])
+        result = {'success': True, 'user': r["user_id"], 'review_id': res}
     except Exception as e:
         print(e)
         result = {'success': False}
@@ -42,7 +42,7 @@ def update_review(review_id):
     """Updates a review"""
     try:
         r = request.json
-        db.update_review(r["Overall Rating"], r["water_id"], r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["UserID"], review_id)
+        db.update_review(r["Rating"], r["water_id"], r["Taste"], r["Price"], r["Mouth Feel"], r["Portability"], r["Packaging Quality"], r["user_id"], review_id)
         result = {'success': True }
     except Exception as e:
         print(e)
@@ -55,7 +55,6 @@ def update_review(review_id):
 def delete_review(review_id):
     """Deletes a new review"""
     try:
-        r = request.json
         db.delete_review(review_id)
         result = {'success': True }
     except Exception as e:
@@ -73,4 +72,43 @@ def get_waters_by_min_rating(rating):
     except Exception as e:
         print(e)
         result = {'success': False}
+    return jsonify(result)
+
+@app.route("/water/<string:waterId>", methods=['GET'])
+def get_water_details(waterId):
+    """Gets all waters with a min rating"""
+    try:
+        data = db.fetch_water_details_by_id(waterId)
+        result = {'success': True,  'response': data}
+    except Exception as e:
+        print(e)
+        result = {'success': False}
+    return jsonify(result)
+
+@app.route("/users", methods=['POST'])
+def create_user():
+    """Creates a new user"""
+    try:
+        r = request.json
+        if (db.create_user(r["username"], r["password"]) == -1):
+            result = {'success': False, 'message': 'Account is taken'}
+        else:
+            result = {'success': True }
+    except Exception as e:
+        print(e)
+        result = {'success': False, 'message': str(e)}
+    return jsonify(result)
+
+@app.route("/users", methods=['GET'])
+def login_user():
+    """Gets a users id"""
+    try:
+        id = db.get_user_id(request.args.get("username"), request.args.get("password"))
+        if (id is None):
+            result = {'success': False, 'message': 'Incorrect username or password'}
+        else:
+            result = {'success': True, 'data': id }
+    except Exception as e:
+        print(e)
+        result = {'success': False, 'message': str(e)}
     return jsonify(result)

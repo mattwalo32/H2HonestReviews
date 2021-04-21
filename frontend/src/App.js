@@ -12,10 +12,11 @@ import AddStuff from './AddStuff';
 
 function App() {
     const [isUserAuthenticated, setUserAuthenticated] = useState(false);
+    const [userData, setUserData] = useState({});
 
     function renderApp() {
       if (!isUserAuthenticated)
-        return <LoginPage onAuthChange={setUserAuthenticated} />
+        return <LoginPage onAuthChange={setUserAuthenticated} onUserDataChange={setUserData} />
 
       return (
       <Router>
@@ -50,7 +51,7 @@ function App() {
           path="/profile"
           component={() => (
             <Navigation
-              content={<Profile />}
+              content={<Profile userData={userData} />}
               page="profile"
               needsAuth={false}
             />
@@ -69,7 +70,7 @@ function App() {
         <Route
           path="/waters/:waterId"
           component={() => (
-            <DetailsPage />
+            <DetailsPage userData={userData} />
           )}
         />
       </Router>

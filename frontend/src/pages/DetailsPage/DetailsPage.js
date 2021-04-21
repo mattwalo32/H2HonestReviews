@@ -14,10 +14,10 @@ const MOCK_WATER_DATA = {
     name: "Kirkland",
     imageURL: "https://media.istockphoto.com/photos/water-bottle-on-white-background-picture-id1126933760?k=6&m=1126933760&s=612x612&w=0&h=_ekI__thTuuhyQ5avoB81g7qnBm6Un5pq7AMVBPRruk=",
     averageRating: "3",
-    distributors: [
-        {name: "Costco", city: "Gurnee"},
-        {name: "Target", city: "Champaign"},
-    ],
+    // distributors: [
+    //     {name: "Costco", city: "Gurnee"},
+    //     {name: "Target", city: "Champaign"},
+    // ],
     manufacturer: {
         name: "Kirkland",
         country: "United States",
@@ -45,7 +45,7 @@ const MOCK_WATER_DATA = {
     ]
 }
 
-const DetailsPage = () => {
+const DetailsPage = ({userData}) => {
     const [waterData, setWaterData] = useState(null)
     const [reviews, setReviews] = useState([])
     const [liked, setLiked] = useState(false);
@@ -54,14 +54,19 @@ const DetailsPage = () => {
 
     useEffect(() => {
         const getWaterData = async () => {
-            // TODO: Replace with actual API call
-            setWaterData(MOCK_WATER_DATA)
-
-            // TODO: Get if the user likes this water from backend
             setLiked(false);
 
             let res = await axios.get(`${BASE_URL}/water/${waterId}/reviews`)
-            setReviews(res.data.response);
+            if (!res?.data?.success)
+                alert("An error occurred fetching reviews")
+            else
+                setReviews(res.data.response);
+
+            res = await axios.get(`${BASE_URL}/water/${waterId}`)
+            if (!res?.data?.success)
+                alert("An error occurred fetching water")
+            else
+                setWaterData(res.data.response);
         }
 
         getWaterData();
@@ -75,11 +80,11 @@ const DetailsPage = () => {
     const WaterInfo = () => {
         return (
             <div>
-                <h2>Water Info</h2>
+                {/* <h2>Water Info</h2>
                 <h3>Manufacturer</h3>
                 <p>Name: {waterData?.manufacturer?.name}</p>
                 <p>Country: {waterData?.manufacturer?.country}</p>
-                <p>Year Founded: {waterData?.manufacturer?.yearFounded}</p>
+                <p>Year Founded: {waterData?.manufacturer?.yearFounded}</p> */}
 
                 <h3>Distributors</h3>
                 {waterData?.distributors && waterData?.distributors.map((d) => {
@@ -109,13 +114,13 @@ const DetailsPage = () => {
     const Review = ({review, index}) => {
         const [isDisabled, setIsDisabled] = useState(true);
         const [userReview, setUserReview] = useState({
-            "Overall Rating": review.rating,
+            "Rating": review.rating,
             "Taste": review.taste,
             "Price": review.price,
             "Mouth Feel": review.mouth_feel,
             "Portability": review.portability,
             "Packaging Quality": review.packaging_quality,
-            "UserID" : review.user_id,
+            "user_id" : review.user_id,
             "water_id": waterId
         })
 
@@ -133,8 +138,17 @@ const DetailsPage = () => {
             setIsDisabled(!isDisabled);
         }
 
-        const deleteReview = () => {
-            axios.delete(`${BASE_URL}/reviews/${review.review_id}`)
+        const deleteReview = async () => {
+            if(!review.review_id) {
+                setReviews((reviews) => reviews.filter((r) => r.review_id != review.review_id));
+                return;
+            }
+            const res = await axios.delete(`${BASE_URL}/reviews/${review.review_id}`)
+            if (res.data.success) {
+                setReviews((reviews) => reviews.filter((r) => r.review_id != review.review_id));
+            } else {
+                alert(JSON.stringify(res))
+            }
         }
 
         return (
@@ -151,8 +165,8 @@ const DetailsPage = () => {
                     { renderRatingStatistic("Portability", index, userReview["Portability"], isDisabled, onChange) }
                     { renderRatingStatistic("Packaging Quality", index, userReview["Packaging Quality"], isDisabled, onChange) }
                 </GridList>
-                <Button variant="contained" color="primary" onClick={editSaveReview}>{isDisabled ? "Edit" : "Save"}</Button>
-                <Button variant="contained" color="primary" onClick={deleteReview}>Delete</Button>
+                { review?.user_id == userData?.user_id && <Button variant="contained" color="primary" onClick={editSaveReview}>{isDisabled ? "Edit" : "Save"}</Button>}
+                { review?.user_id == userData?.user_id && <Button variant="contained" color="primary" onClick={deleteReview}>Delete</Button> }
             </div>
         )
     }
@@ -170,17 +184,24 @@ const DetailsPage = () => {
 
     const LeaveReview = () => {
         const [userReview, setUserReview] = useState({
-            "Overall Rating": 0,
+            "Rating": 0,
             "Taste": 0,
             "Price": 0,
             "Mouth Feel": 0,
             "Portability": 0,
             "Packaging Quality": 0,
-            "UserID" : Math.floor(Math.random() * 999)
+            "user_id" : userData.user_id,
         })
 
-        const submitReview = () => {
-            axios.post(`${BASE_URL}/reviews/${waterId}`, userReview)
+        const submitReview = async () => {
+            const res = await axios.post(`${BASE_URL}/reviews/${waterId}`, userReview)
+            if (res.data.success) {
+                console.log(userReview)
+                setReviews((reviews) => reviews.concat([userReview]));
+                alert("Review submitted")
+            } else {
+                alert(JSON.stringify(res))
+            }
         }
 
         const onChange = (property, value) => {
@@ -196,7 +217,7 @@ const DetailsPage = () => {
                 <GridList 
                     cellHeight={175}
                     cols={3}>
-                    { renderRatingStatistic("Overall Rating", 0, userReview?.rating, false, onChange) }
+                    { renderRatingStatistic("Rating", 0, userReview?.rating, false, onChange) }
                     { renderRatingStatistic("Taste", 0, userReview?.taste, false, onChange) }
                     { renderRatingStatistic("Price", 0, userReview?.price, false, onChange) }
                     { renderRatingStatistic("Mouth Feel", 0, userReview?.mouthFeel, false, onChange) }

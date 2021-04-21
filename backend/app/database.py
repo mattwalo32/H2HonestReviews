@@ -193,7 +193,8 @@ def create_review(rating, water_id, taste, price, mouth_feel, portability, packa
     conn = db.connect()
     query = 'Insert Into Reviews(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id) VALUES ("{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(
         rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id)
-    conn.execute(query)
+    query_result = conn.execute(query)
+    print(query_result)
     conn.close()
 
 def update_review(rating, water_id, taste, price, mouth_feel, portability, packaging_quality, user_id, review_id):
@@ -305,3 +306,54 @@ GROUP BY m.country;"""
         }
         rating_list.append(item)
     return rating_list
+
+def get_user_id(username, password):
+    conn = db.connect()
+    query = 'SELECT user_id, username FROM User WHERE username="{}" AND password="{}"'.format(username, password)
+    query_results = conn.execute(query).fetchall()
+    for result in query_results:
+        return { "user_id": result[0], "username": result[1] }
+    conn.close()
+    return None
+
+def create_user(username, password):
+    conn = db.connect()
+    query = 'SELECT user_id FROM User WHERE username="{}"'.format(username)
+    query_results = conn.execute(query).fetchall()
+    if (len(query_results) != 0):
+        conn.close()
+        return -1
+
+    query = 'INSERT INTO User(username, password) VALUES ("{}", "{}")'.format(username, password)
+    conn.execute(query)
+    conn.close()
+    return 1
+
+def fetch_water_details_by_id(id):
+    conn = db.connect()
+    query = 'SELECT * FROM Water NATURAL JOIN Sells NATURAL JOIN Distributor WHERE Water.water_id = {}'.format(id)
+    query_results = conn.execute(query).fetchall()
+
+    water_list = []
+    for result in query_results:
+        item = {
+            "name": result[5],
+            "city": result[4],
+        }
+        water_list.append(item)
+
+
+    query_results = conn.execute("SELECT name FROM Water WHERE water_id={}".format(id)).fetchall()
+    name = query_results[0][0]
+
+    query_results = conn.execute("SELECT AVG(rating) AS avgRating FROM Water NATURAL JOIN Reviews WHERE water_id = {}".format(id)).fetchall()
+    avg_rating = float(query_results[0][0])
+
+    water_data = {
+        "distributors": water_list,
+        "name": name,
+        "averageRating": avg_rating,
+        "imageURL": "https://media.istockphoto.com/photos/water-bottle-on-white-background-picture-id1126933760?k=6&m=1126933760&s=612x612&w=0&h=_ekI__thTuuhyQ5avoB81g7qnBm6Un5pq7AMVBPRruk=",
+    }
+    conn.close()
+    return water_data
