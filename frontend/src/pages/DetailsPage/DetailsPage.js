@@ -67,6 +67,13 @@ const DetailsPage = ({userData}) => {
                 alert("An error occurred fetching water")
             else
                 setWaterData(res.data.response);
+
+            res = await axios.get(`${BASE_URL}/waters/${waterId}/similar`)
+            if (!res?.data?.success)
+                alert("An error occurred fetching water")
+            else
+                setWaterData((d) => ({...d, similar: res.data.data}));
+            console.log(res.data.data)
         }
 
         getWaterData();
@@ -80,15 +87,23 @@ const DetailsPage = ({userData}) => {
     const WaterInfo = () => {
         return (
             <div>
-                {/* <h2>Water Info</h2>
-                <h3>Manufacturer</h3>
-                <p>Name: {waterData?.manufacturer?.name}</p>
-                <p>Country: {waterData?.manufacturer?.country}</p>
-                <p>Year Founded: {waterData?.manufacturer?.yearFounded}</p> */}
-
                 <h3>Distributors</h3>
                 {waterData?.distributors && waterData?.distributors.map((d) => {
                     return <p>{d.name} ({d.city})</p>
+                })}
+            </div>
+        );
+    }
+
+    const SimilarWaters = () => {
+        return (
+            <div>
+                <h3>People Also Liked</h3>
+                {waterData?.similar && waterData?.similar.map((d) => {
+                    if (d.name === waterData?.name)
+                        return null;
+                    // TODO: Href
+                    return <p>{d.name}</p>
                 })}
             </div>
         );
@@ -236,6 +251,7 @@ const DetailsPage = ({userData}) => {
             <img className="image" src={waterData?.imageURL} />
             <Button className="like-button" variant="contained" color={liked ? "primary" : "secondary" } onClick={onLike}>{liked ? "Unlike" : "like"}</Button> 
             <WaterInfo />
+            <SimilarWaters />
 
             <div className="reviews-container">
                 <h2>Average Rating</h2>
