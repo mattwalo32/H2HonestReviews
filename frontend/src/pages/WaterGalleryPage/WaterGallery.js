@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Layout, Menu} from "antd";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Axios from 'axios';
-import { Form, Input, Checkbox} from "antd";
 
 const useStylesGrid = makeStyles((theme) => ({
   root: {
@@ -40,7 +37,7 @@ const tailLayout = {
 };
 
 
-function WaterGallery() {
+function WaterGallery({userData}) {
   const gridClasses = useStylesGrid();
   const [tempStorage, setTempStorage] = useState(0)
   const [waterList, setWaterList] = useState([]);
@@ -58,7 +55,7 @@ function WaterGallery() {
 
     const handleShowAllWaters = () => {
       Axios.get('http://localhost:5000/waters').then((response) => {
-        if (response.data['success'] == true)
+        if (response.data['success'] === true)
           console.log(response.data.response)
           if (response.data.response == null) {
             setWaterList([])
@@ -69,8 +66,8 @@ function WaterGallery() {
     }
 
     const handleShowFollowingFavs = () => {
-      Axios.get('http://localhost:5000/following/favorites/7').then((response) => {
-        if (response.data['success'] == true)
+      Axios.get('http://localhost:5000/following/favorites/' + userData.user_id).then((response) => {
+        if (response.data['success'] === true)
           console.log(response.data.response)
           if (response.data.response == null) {
             setWaterList([])
@@ -111,7 +108,7 @@ function WaterGallery() {
     }
 
     const handleKeyPress = (event) => {
-      if(event.key == 'Enter'){
+      if(event.key === 'Enter'){
         event.preventDefault();
         filterByName()
       }
@@ -119,7 +116,7 @@ function WaterGallery() {
 
     const filterByName = () => {
       Axios.get('http://localhost:5000/waters/name/' + name).then((response) => {
-        if (response.data['success'] == true)
+        if (response.data['success'] === true)
           console.log('response: ' + response.data.response)
           if (response.data.response == null) {
             setWaterList([])
@@ -129,7 +126,7 @@ function WaterGallery() {
       })
     }
 
-    if (filter == 'name') {
+    if (filter === 'name') {
       return (
         <form noValidate autoComplete="off">
           <TextField id="outlined-basic" label="Name" variant="outlined" onChange={handleTextChange} onKeyPress={handleKeyPress}/>
@@ -145,13 +142,14 @@ function WaterGallery() {
 
     const handleSliderChange = (event, newValue) => {
       Axios.get(`http://localhost:5000/water/byminrating/${newValue}`).then((response) => {
-        if (response.data['success'] == true)
+        if (response.data['success'] === true)
           setWaterList(response.data.response)
       })
+      //setSliderValue(newValue)
       setTempStorage(newValue)
     };
 
-    if (filter == 'rating') {
+    if (filter === 'rating') {
       return (
         <div className={sliderClasses.root}>
             <Typography id="continuous-slider" gutterBottom>
@@ -189,7 +187,7 @@ function WaterGallery() {
     const deleteWater = () => {
       Axios.post('http://localhost:5000/waters/delete/' + val.val.water_id).then((response) => {
         console.log(response.data)
-        setWaterList(waterList.filter((_, i) => i != index))
+        setWaterList(waterList.filter((_, i) => i !== index))
       })
     }
 
@@ -206,7 +204,7 @@ function WaterGallery() {
     }
 
     const handleKeyPress = (event) => {
-      if(event.key == 'Enter'){
+      if(event.key === 'Enter'){
         event.preventDefault();
         submitWater()
       }

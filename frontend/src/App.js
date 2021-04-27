@@ -3,7 +3,7 @@ import React, {useState, useEffect} from "react";
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import Home from "./Home";
 import Navigation from "./Navigation";
-import WaterGallery from "./WaterGallery";
+import WaterGallery from "./pages/WaterGalleryPage/WaterGallery";
 import ManufacturerGallery from "./ManufacturerGallery";
 import Profile from "./Profile";
 import LoginPage from "./pages/LoginPage/LoginPage"
@@ -31,7 +31,7 @@ function App() {
           path="/gallery"
           component={() => (
             <Navigation
-              content={<WaterGallery />}
+              content={<WaterGallery userData={userData}/>}
               page="gallery"
               needsAuth={false}
             />
