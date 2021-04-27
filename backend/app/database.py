@@ -357,3 +357,17 @@ def fetch_water_details_by_id(id):
     }
     conn.close()
     return water_data
+
+def get_similar_waters(water_id):
+    conn = db.connect()
+    query = 'CALL sp_GetSimilarItems({})'.format(water_id)
+    waters = []
+    query_results = conn.execute(query).fetchall()
+    for result in query_results:
+        item = {
+            "id": result[0],
+            "name": result[1]
+        }
+        waters.append(item)
+    
+    return waters

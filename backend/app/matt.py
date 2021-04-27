@@ -112,3 +112,15 @@ def login_user():
         print(e)
         result = {'success': False, 'message': str(e)}
     return jsonify(result)
+
+
+@app.route("/waters/<string:waterId>/similar", methods=['GET'])
+def get_similar_water(waterId):
+    """Gets a users id"""
+    try:
+        waters = db.get_similar_waters(waterId)
+        result = {'success': True, 'data': waters }
+    except Exception as e:
+        print(e)
+        result = {'success': False, 'message': str(e)}
+    return jsonify(result)
