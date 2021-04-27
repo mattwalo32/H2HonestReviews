@@ -364,6 +364,10 @@ def get_similar_waters(water_id):
     waters = []
     query_results = conn.execute(query).fetchall()
     for result in query_results:
-        waters.append(result[1])
+        item = {
+            "id": result[0],
+            "name": result[1]
+        }
+        waters.append(item)
     
     return waters
