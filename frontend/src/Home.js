@@ -14,6 +14,7 @@ function Home(props) {
       width={700}
       src = {logo}
     />
+    <a href='/Calendar.ics' download>Get water reminders</a>
     </div>
   );
 }
