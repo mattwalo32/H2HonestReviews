@@ -88,7 +88,8 @@ function AddStuff(props) {
     }
 
   return (
-    <div>
+    <div style = {{padding: 100}}>
+        <div style = {{margin: 50, width: 600}}>
         <h1>Add a Distributor</h1>
       <Form
       {...layout}
@@ -183,6 +184,8 @@ function AddStuff(props) {
         </Button>
       </Form.Item>
     </Form>
+
+    </div>
 
     <h1>Search for a Distributor!</h1>
     <input placeholder="Enter City" 
