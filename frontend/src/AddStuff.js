@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Form, Input, Button, Checkbox, Card} from "antd";
+import { Form, Input, Button, Checkbox, Card, Modal} from "antd";
+import {Grid, GridList, GridListTile} from '@material-ui/core'
 import Axios from 'axios';
+import './AddStuff.css';
 
 
 
@@ -9,6 +11,9 @@ function AddStuff(props) {
     const [searchCity, setSearchCity] = useState("");
     const [distributors, setDistributors] = useState([]);
     const [countryRatings, setCountryRatings] = useState([]);
+    const [isDistributorModalVisible, setIsDistributorModalVisible] = useState(false);
+    const [distributorVal, setDistributorVal] = useState({});
+    const [form] = Form.useForm();
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
@@ -24,10 +29,10 @@ function AddStuff(props) {
         })
       
     }
-    function updateDistributor(values) {
-        console.log(values)
+    function updateDistributor(values) { 
       Axios.put('http://localhost:5000/distributor/' + values["distributor_id"], values).then((response) => {
           console.log(response.data);
+          closeDistributorModal();
           searchDistributor();
         })
       
@@ -67,9 +72,23 @@ function AddStuff(props) {
           })
     }
 
+    function openDistributorUpdate(val) {
+        console.log("ran open");
+        console.log(val);
+        setDistributorVal(val);
+        setIsDistributorModalVisible(true);
+    }
+
+    function closeDistributorModal() {
+        console.log("ran close");
+        form.resetFields();
+        setDistributorVal({});
+        setIsDistributorModalVisible(false);
+    }
+
   return (
     <div>
-        <h1>Add a distributor</h1>
+        <h1>Add a Distributor</h1>
       <Form
       {...layout}
       name="basic"
@@ -174,10 +193,11 @@ function AddStuff(props) {
     >
           Submit
     </Button>
-    <div>
+    <Grid container spacing={3}>
 
             {distributors.map((val, index) => {
               return (
+                <Grid item xs={3}>
                 <Card  style={{ width: 300 }}>
                 <p>{val["distributor_name"]}</p>
                 <p>{val["distributor_city"]}</p>
@@ -187,12 +207,69 @@ function AddStuff(props) {
                 >
                     DELETE
                 </Button>
+                <Button
+                onClick = {() => (openDistributorUpdate(val))}
+                >
+                    UPDATE
+                </Button>
                 </Card>
+                </Grid>
               );
             })}
-    </div>
+    </Grid>
+    <Modal
+    title="Update Distributor" visible={isDistributorModalVisible} onOk={() => closeDistributorModal()} onCancel={() => closeDistributorModal()}
+    >
 
-    <h1>Update a distributor</h1>
+    <Form
+      {...layout}
+      name="basic"
+      form={form}
+      onFinish={updateDistributor}
+    >
+        <div>
+        {distributorVal["distributor_id"]}
+        </div>
+        <div>
+        {distributorVal["distributor_city"]}
+        </div>
+        <div>
+        {distributorVal["distributor_name"]}
+        </div>
+        <Form.Item
+        label="ID"
+        name="distributor_id"
+        rules={[{ required: true, message: 'Please input the ID of the distributor!' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="City"
+        name="distributor_city" 
+        rules={[{ required: true, message: 'Please input the city of the distributor!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        label="Name"
+        name="distributor_name"
+        rules={[{ required: true, message: 'Please input the name of the distributor!' }]}
+      >
+        <Input/>
+      </Form.Item>
+
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+      </Modal>
+
+    <div style = {{padding: 20}}/>
+
+    {/* <h1>Update a distributor</h1>
       <Form
       {...layout}
       name="basic"
@@ -226,26 +303,31 @@ function AddStuff(props) {
           Submit
         </Button>
       </Form.Item>
-    </Form>
+    </Form> */}
 
     <h1>See All countries and average rating!</h1>
 
+    <div style = {{padding: 20}}/>
     <Button type="primary" 
     onClick = {searchCountry}
     >
           Click here to see!
     </Button>
-    <div>
+    <div style = {{padding: 20}}/>
+    <Grid container spacing={3}>
 
             {countryRatings.map((val, index) => {
               return (
+                <Grid item xs={3}>
                 <Card  style={{ width: 300 }}>
                 <p>{val["country"]}</p>
                 <p>{val["avg_rating"]}</p>
                 </Card>
+                </Grid>
+                
               );
             })}
-    </div>
+    </Grid>
 
   </div>
   );
