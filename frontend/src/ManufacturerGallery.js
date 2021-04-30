@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
+import {Grid, GridList, GridListTile} from '@material-ui/core'
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Axios from 'axios';
-import { Form, Input} from "antd";
+import { Form, Input, Card} from "antd";
 
 const useStylesGrid = makeStyles((theme) => ({
   root: {
@@ -22,6 +22,9 @@ const useStylesSlider = makeStyles({
   root: {
     width: 300,
   },
+  editForm: {
+      width: 300
+  }
 });
 
 const layout = {
@@ -44,7 +47,7 @@ function ManufacturerGallery() {
   const history = useHistory();
 
   const updateMfgList = () => {
-    if (!mfgListUpdated) {
+    // if (!mfgListUpdated) {
       if (showMfgByName != null && showMfgByName != "") {
         Axios.get('http://localhost:5000/manufacturers/search/' + showMfgByName).then((response) => {
           if (response.data['success'] === true)
@@ -54,7 +57,7 @@ function ManufacturerGallery() {
               setMfgList(response.data.response)
             }
         })
-        setShowMfgByName(null);
+        // setShowMfgByName(null);
       } else {
         Axios.get(`http://localhost:5000/manufacturers`).then((response) => {
           if (response.data['success'] === true)
@@ -64,7 +67,7 @@ function ManufacturerGallery() {
         })
       }
       setMfgListUpdated(true);
-    }
+    // }
   }
 
   const setMfgListNeedsUpdate = () => {
@@ -74,6 +77,8 @@ function ManufacturerGallery() {
   const setShouldSearchForName = (values) => {
     setShowMfgByName(values.name);
     setMfgListUpdated();
+    console.log("ran search for Name")
+    updateMfgList();
   }
 
   const Manufacturer = (val) => {
@@ -82,6 +87,7 @@ function ManufacturerGallery() {
     const submitMfg = (values) => {
       Axios.post('http://localhost:5000/manufacturers/update/' + val.val.manufacturer_id, values).then((response) => {
         console.log(response.data)
+        updateMfgList();
       })
       setEditing(false)
     }
@@ -89,6 +95,7 @@ function ManufacturerGallery() {
     const deleteMfg = () => {
       Axios.post('http://localhost:5000/manufacturers/delete/' + val.val.manufacturer_id).then((response) => {
         console.log(response.data)
+        updateMfgList();
       })
     }
 
@@ -104,7 +111,6 @@ function ManufacturerGallery() {
       if (editing) {
         return (
           <Form
-            {...layout}
             name="basic"
             onFinish={submitMfg}
           >
@@ -141,22 +147,22 @@ function ManufacturerGallery() {
     }
 
     return (
-      <Paper className={gridClasses.paper}>
+    <Card>
         <h1>{val.val.name} </h1>
         <h3>Year Founded: {val.val.year_founded} </h3>
         <h3>Country: {val.val.country} </h3>
-        <Button variant="contained" onClick={handleViewDetails}> View Details</Button>
+        {/* <Button variant="contained" onClick={handleViewDetails}> View Details</Button> */}
         <Button variant="contained" onClick={setEditingMfg}> Edit</Button>
         <Button variant="contained" onClick={deleteMfg}> Delete</Button>
-        {showEditForm()}
-      </Paper>
+        <div classname = "editForm">{showEditForm()}</div>
+    </Card>
     )
   }
 
   return (
     <div className="Manufacturer Gallery">
       <h1> Manufacturers </h1>
-      {updateMfgList()}
+      {/* {updateMfgList()} */}
       <div className="form">
         <Button variant="contained" onClick={setMfgListNeedsUpdate}> Update</Button>
         <br></br>
@@ -181,17 +187,19 @@ function ManufacturerGallery() {
           </Form>
 
         </div>
-        <div className={gridClasses.root}>
+        {/* <div className={gridClasses.root}> */}
           <Grid container spacing={3}>
             {mfgList.map((val, index) => {
               return (
-                <Grid key={index}>
+                // <Grid key={index}>
+                <Grid item xs={3}>
                   <Manufacturer val={val} />
                 </Grid>
+
               );
             })}
           </Grid>
-        </div>
+        {/* </div> */}
       </div>
     </div>
   );

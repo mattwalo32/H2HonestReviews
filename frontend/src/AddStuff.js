@@ -4,6 +4,7 @@ import { Form, Input, Button, Checkbox, Card, Modal} from "antd";
 import {Grid, GridList, GridListTile} from '@material-ui/core'
 import Axios from 'axios';
 import './AddStuff.css';
+import ManufacturerGallery from "./ManufacturerGallery";
 
 
 
@@ -269,41 +270,7 @@ function AddStuff(props) {
 
     <div style = {{padding: 20}}/>
 
-    {/* <h1>Update a distributor</h1>
-      <Form
-      {...layout}
-      name="basic"
-      onFinish={updateDistributor}
-    >
-        <Form.Item
-        label="ID"
-        name="distributor_id"
-        rules={[{ required: true, message: 'Please input the ID of the distributor!' }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="City"
-        name="distributor_city"
-        rules={[{ required: true, message: 'Please input the city of the distributor!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        label="Name"
-        name="distributor_name"
-        rules={[{ required: true, message: 'Please input the name of the distributor!' }]}
-      >
-        <Input/>
-      </Form.Item>
-
-      <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form> */}
+    <ManufacturerGallery/>
 
     <h1>See All countries and average rating!</h1>
 

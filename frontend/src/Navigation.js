@@ -21,11 +21,11 @@ function Navigation(props) {
             gallery
         </NavLink>
         </Menu.Item>
-        <Menu.Item>
+        {/* <Menu.Item>
         <NavLink to="/manufacturers">
             manufacturers
         </NavLink>
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item>
         <NavLink to="/profile">
             profile
